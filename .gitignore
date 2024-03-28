@@ -1,0 +1,6 @@
+bin
+dep
+*.dll
+*.dll.a
+JOGO.exe
+JOGO

@@ -5,17 +5,31 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-Sprite::Sprite(): clipRect() {
+bool Sprite::Is(std::string s) {
+    return s == "Sprite";
+}
+
+void Sprite::Update(double dt) {
+
+}
+
+
+
+Sprite::Sprite(GameObject& associated):
+    Component(associated), clipRect() {
     texture = nullptr;
 }
-Sprite::Sprite(const char* file) {
+Sprite::Sprite(GameObject& associated, const char* file): Component(associated) {
     texture = nullptr;
     Open(file);
 }
+
 Sprite::~Sprite() {
     SDL_DestroyTexture(texture);
 }
+
 void Sprite::Open(const char* file) {
+    SDL_Log("opening");
     if (IsOpen()) {
         SDL_DestroyTexture(texture);
     }
@@ -43,14 +57,16 @@ void Sprite::SetClip(
     clipRect.y = y;
     clipRect.w = w;
     clipRect.h = h;
+
+    associated.box.dimensions = {w, h};
 }
 
-void Sprite::Render(int x, int y) {
+void Sprite::Render() {
     SDL_Rect dest;
-    dest.x = x;
-    dest.y = y;
-    dest.w = clipRect.w;
-    dest.h = clipRect.h;
+    dest.x = associated.box.topLeftCorner.x;
+    dest.y = associated.box.topLeftCorner.y;
+    dest.w = associated.box.dimensions.x;
+    dest.h = associated.box.dimensions.y;
     int result = SDL_RenderCopy(
         Game::GetInstance().GetRenderer(),
         texture,

@@ -64,6 +64,7 @@ Game::Game(const char* title, int width, int height) {
     if (renderer == NULL || renderer == nullptr) {
         ThrowError::SDL_Error();
     }
+
     state = new State();
 
     SDL_Log("Game loading ended");
@@ -72,7 +73,7 @@ Game::Game(const char* title, int width, int height) {
 
 Game::~Game() {
     delete state;
-
+    
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 

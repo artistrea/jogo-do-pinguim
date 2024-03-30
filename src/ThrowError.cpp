@@ -3,7 +3,6 @@
 #include <stdexcept>
 
 void ThrowError::Error(const char* message) {
-    // windows não escreve o log de exceção no console.
     SDL_LogError(SDL_LOG_CATEGORY_ERROR, message);
     throw std::runtime_error(message);
 }

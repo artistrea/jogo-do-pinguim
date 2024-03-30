@@ -4,6 +4,7 @@
 #include "Sound.h"
 #include "Music.h"
 #include "Face.h"
+#include "TileMap.h"
 #include "Constants.h"
 #include <SDL2/SDL.h>
 #include <vector>
@@ -29,8 +30,15 @@ void State::LoadAssets() {
 
     GameObject* bg(new GameObject());
     bg->AddComponent(new Sprite(*bg, "./assets/img/ocean.jpg"));
-
     objectArray.emplace_back(bg);
+
+    GameObject* tilemapObj(new GameObject());
+    TileSet* tileSet(new TileSet(64, 64, "./assets/img/tileset.png"));
+	TileMap* tileMap(new TileMap(*tilemapObj, "./assets/map/tileMap.txt", tileSet));
+
+	tilemapObj->AddComponent(tileMap);
+
+    objectArray.emplace_back(tilemapObj);
 
     music.Open("./assets/audio/stageState.ogg");
 

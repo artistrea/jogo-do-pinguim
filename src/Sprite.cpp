@@ -19,6 +19,7 @@ Sprite::Sprite(GameObject& associated):
     Component(associated), clipRect() {
     texture = nullptr;
 }
+
 Sprite::Sprite(GameObject& associated, const char* file): Component(associated) {
     texture = nullptr;
     Open(file);
@@ -52,18 +53,15 @@ void Sprite::SetClip(
     int x, int y,
     int w, int h
 ) {
-    clipRect.x = x;
-    clipRect.y = y;
-    clipRect.w = w;
-    clipRect.h = h;
+    clipRect = {x, y, w, h};
 
     associated.box.dimensions = {(double)w, (double)h};
 }
 
-void Sprite::Render() {
+void Sprite::Render(double x, double y) {
     SDL_Rect dest;
-    dest.x = associated.box.topLeftCorner.x;
-    dest.y = associated.box.topLeftCorner.y;
+    dest.x = x;
+    dest.y = y;
     dest.w = associated.box.dimensions.x;
     dest.h = associated.box.dimensions.y;
     int result = SDL_RenderCopy(
@@ -74,6 +72,10 @@ void Sprite::Render() {
     );
 
     if (result) ThrowError::SDL_Error();
+}
+
+void Sprite::Render() {
+    Render(associated.box.topLeftCorner.x, associated.box.topLeftCorner.y);
 }
 
 int Sprite::GetWidth() {

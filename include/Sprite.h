@@ -20,6 +20,7 @@ public:
 
     void Update(double dt);
     void Render();
+    void Render(double x, double y);
     bool Is(std::string type);
 
     

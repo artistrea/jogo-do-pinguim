@@ -12,7 +12,7 @@ public:
     );
     ~TileSet();
     void RenderTile(
-        unsigned int index,
+        int index,
         double x,
         double y
     );

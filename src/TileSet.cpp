@@ -9,7 +9,7 @@ TileSet::TileSet(
     int tileWidth,
     int tileHeight,
     const char* file
-) {
+): tileWidth(tileWidth), tileHeight(tileHeight) {
     if (tileHeight <= 0 || tileWidth <= 0) ThrowError::Error("TileSet cannot have dimension <= 0");
 
     GameObject* gameObj = new GameObject();
@@ -24,16 +24,16 @@ TileSet::TileSet(
 }
 
 TileSet::~TileSet() {
-    
+    delete tileSet;
 }
 
 void TileSet::RenderTile(
-    unsigned int index,
+    int index,
     double x,
     double y
 ) {
-    unsigned int tileX = index % columns;
-    unsigned int tileY = index / columns;
+    int tileX = index % columns;
+    int tileY = index / columns;
 
     if (tileY >= rows) {
         char buff[120];
@@ -43,6 +43,11 @@ void TileSet::RenderTile(
         ThrowError::Error(buff);
     }
 
+    // SDL_Log("setting tile clip for (%d, %d, %d, %d)", tileX * tileWidth,
+    //     tileY * tileHeight,
+    //     tileWidth,
+    //     tileHeight);
+
     tileSet->SetClip(
         tileX * tileWidth,
         tileY * tileHeight,
@@ -51,8 +56,8 @@ void TileSet::RenderTile(
     );
 
     tileSet->Render(
-        tileX,
-        tileY
+        x,
+        y
     );
 }
 

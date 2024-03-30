@@ -37,6 +37,8 @@ void State::LoadAssets() {
 	TileMap* tileMap(new TileMap(*tilemapObj, "./assets/map/tileMap.txt", tileSet));
 
 	tilemapObj->AddComponent(tileMap);
+	tilemapObj->box.topLeftCorner = {0,0};
+	tilemapObj->box.dimensions = {64,64};
 
     objectArray.emplace_back(tilemapObj);
 

@@ -14,6 +14,10 @@ TileMap::TileMap(
     SetTileSet(tileSet);
 }
 
+TileMap::~TileMap() {
+    delete this->tileSet;
+}
+
 void TileMap::Load(const char* file) {
     // read file
     std::ifstream f;
@@ -28,13 +32,13 @@ void TileMap::Load(const char* file) {
 
     // set dimensions
     f >> mapWidth;
-    f.ignore(std::numeric_limits<std::streamsize>::max(), ',');
+    f.ignore(1, ',');
     f >> mapHeight;
-    f.ignore(std::numeric_limits<std::streamsize>::max(), ',');
+    f.ignore(1, ',');
     f >> mapDepth;
-    f.ignore(std::numeric_limits<std::streamsize>::max(), ',');
+    f.ignore(1, ',');
 
-    SDL_Log("(%d, %d, %d) = %d", mapWidth, mapHeight, mapDepth);
+    // SDL_Log("(%d, %d, %d)", mapWidth, mapHeight, mapDepth);
 
     tileMatrix.reserve(mapWidth * mapHeight * mapDepth);
 
@@ -44,12 +48,14 @@ void TileMap::Load(const char* file) {
                 f >> At(k,j,i);
                 At(k,j,i)--;
                 // SDL_Log("(%d, %d, %d) = %d", k, j, i, At(k,j,i));
-                f.ignore(std::numeric_limits<std::streamsize>::max(), ',');
+                f.ignore(1, ',');
 
                 // f >> tileMatrix[i*mapHeight*mapWidth + j*mapWidth + k];
                 // tileMatrix[i*mapHeight*mapWidth + j*mapWidth + k]--;
             }
+            f.ignore(1, '\n');
         }
+        f.ignore(1, '\n');
     }
 }
 
@@ -76,6 +82,9 @@ void TileMap::RenderLayer(
 ) {
     for (int i=0; i < mapHeight; i++) {
         for (int j=0; j < mapWidth; j++) {
+            if (At(j, i, layer) == -1) continue;
+            // if (j == 0 && i == 0)
+            //     SDL_Log("Rendering tile at (%d, %d, %d) = %d", j, i, layer, At(j, i, layer));
             tileSet->RenderTile(
                 At(j, i, layer),
                 tileSet->GetTileWidth()*j,

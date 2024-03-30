@@ -13,6 +13,7 @@ public:
         const char* file,
         TileSet* tileSet
     );
+    ~TileMap();
     void Load(const char* file);
     void SetTileSet(TileSet* tileSet);
     int& At(int x, int y, int z = 0);

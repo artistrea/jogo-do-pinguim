@@ -48,7 +48,6 @@ void State::Update(float dt) {
     for (size_t i=0; i < objectArray.size(); i++) {
         if (!objectArray[i]->IsDead()) continue;
 
-		SDL_Log("isDead == tru");
         objectArray.erase(objectArray.begin() + i);
         i--;
     }

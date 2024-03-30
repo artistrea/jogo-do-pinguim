@@ -29,7 +29,6 @@ Sprite::~Sprite() {
 }
 
 void Sprite::Open(const char* file) {
-    SDL_Log("opening");
     if (IsOpen()) {
         SDL_DestroyTexture(texture);
     }
@@ -58,7 +57,7 @@ void Sprite::SetClip(
     clipRect.w = w;
     clipRect.h = h;
 
-    associated.box.dimensions = {w, h};
+    associated.box.dimensions = {(double)w, (double)h};
 }
 
 void Sprite::Render() {

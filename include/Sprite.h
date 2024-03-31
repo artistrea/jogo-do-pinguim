@@ -3,13 +3,14 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "Component.h"
+#include <string>
 
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
-    Sprite(GameObject& associated, const char* file);
+    Sprite(GameObject& associated, std::string file);
     ~Sprite();
-    void Open(const char* file);
+    void Open(std::string file);
     void SetClip(
         int x, int y,
         int w, int h

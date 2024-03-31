@@ -29,12 +29,12 @@ void State::LoadAssets() {
     SDL_Log("started loading assets");
 
     GameObject* bg(new GameObject());
-    bg->AddComponent(new Sprite(*bg, "./assets/img/ocean.jpg"));
+    bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     objectArray.emplace_back(bg);
 
     GameObject* tilemapObj(new GameObject());
-    TileSet* tileSet(new TileSet(64, 64, "./assets/img/tileset.png"));
-	TileMap* tileMap(new TileMap(*tilemapObj, "./assets/map/tileMap.txt", tileSet));
+    TileSet* tileSet(new TileSet(64, 64, "img/tileset.png"));
+	TileMap* tileMap(new TileMap(*tilemapObj, "map/tileMap.txt", tileSet));
 
 	tilemapObj->AddComponent(tileMap);
 	tilemapObj->box.topLeftCorner = {0,0};
@@ -42,7 +42,7 @@ void State::LoadAssets() {
 
     objectArray.emplace_back(tilemapObj);
 
-    music.Open("./assets/audio/stageState.ogg");
+    music.Open("audio/stageState.ogg");
 
     music.Play();
     SDL_Log("finished loading assets");
@@ -130,8 +130,8 @@ void State::Input() {
 
 void State::AddObject(int mouseX, int mouseY) {
     GameObject* enemy(new GameObject());
-    enemy->AddComponent(new Sprite(*enemy, "./assets/img/penguinface.png"));
-    enemy->AddComponent(new Sound(*enemy, "./assets/audio/boom.wav"));
+    enemy->AddComponent(new Sprite(*enemy, "img/penguinface.png"));
+    enemy->AddComponent(new Sound(*enemy, "audio/boom.wav"));
     enemy->AddComponent(new Face(*enemy));
 
 	enemy->box.topLeftCorner = { (double)mouseX, (double)mouseY };

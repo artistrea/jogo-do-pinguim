@@ -1,6 +1,7 @@
 #include "ThrowError.h"
 #include "Game.h"
 #include "State.h"
+#include "Resources.h"
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -9,7 +10,7 @@
 
 Game *Game::instance = nullptr;
 
-Game::Game(const char* title, int width, int height) {
+Game::Game(std::string title, int width, int height) {
     SDL_Log("Game loading started");
 
     if (Game::instance != nullptr) {
@@ -55,7 +56,7 @@ Game::Game(const char* title, int width, int height) {
     //     ThrowError::SDL_Error();
     // }
 
-    window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
     if (window == NULL || window == nullptr) {
         ThrowError::SDL_Error();
     }
@@ -73,6 +74,10 @@ Game::Game(const char* title, int width, int height) {
 
 Game::~Game() {
     delete state;
+
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
     
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -112,7 +117,7 @@ State& Game::GetState() {
     return *state;
 }
 
-const char* GAME_TITLE = "Artur Padovesi Piratelli - 211038208";
+std::string GAME_TITLE = "Artur Padovesi Piratelli - 211038208";
 
 Game& Game::GetInstance() {
     if (Game::instance == nullptr)

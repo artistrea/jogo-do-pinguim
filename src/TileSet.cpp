@@ -4,11 +4,12 @@
 #include "GameObject.h"
 #include "ThrowError.h"
 #include <math.h>
+#include <string>
 
 TileSet::TileSet(
     int tileWidth,
     int tileHeight,
-    const char* file
+    std::string file
 ): tileWidth(tileWidth), tileHeight(tileHeight) {
     if (tileHeight <= 0 || tileWidth <= 0) ThrowError::Error("TileSet cannot have dimension <= 0");
 

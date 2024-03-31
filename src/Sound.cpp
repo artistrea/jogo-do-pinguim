@@ -3,11 +3,13 @@
 #include <SDL2/SDL.h>
 #include "Sound.h"
 #include "ThrowError.h"
+#include "Resources.h"
+#include <string>
 
 Sound::Sound(GameObject& associated):
     Component(associated), chunk(nullptr) {}
 
-Sound::Sound(GameObject& associated, const char* file):
+Sound::Sound(GameObject& associated, std::string file):
     Sound(associated) {
     Open(file);
 }
@@ -16,7 +18,6 @@ Sound::~Sound() {
     if (!IsOpen()) return;
 
     Stop();
-    Mix_FreeChunk(chunk);
 }
 
 bool Sound::IsPlaying() {
@@ -42,13 +43,8 @@ void Sound::Stop() {
     Mix_HaltChannel(channel);
 }
 
-void Sound::Open(const char* file) {
-    if (IsOpen()) {
-        Stop();
-        Mix_FreeChunk(chunk);
-    }
-
-    chunk = Mix_LoadWAV(file);
+void Sound::Open(std::string file) {
+    chunk = Resources::GetSound(file);
 
     if (!IsOpen()) {
         ThrowError::SDL_Error();

@@ -1,12 +1,14 @@
 #include "TileMap.h"
-#include <fstream>
+#include "Resources.h"
 #include "ThrowError.h"
 #include <limits>
 #include <ios>
+#include <string>
+#include <fstream>
 
 TileMap::TileMap(
     GameObject& associated,
-    const char* file,
+    std::string file,
     TileSet* tileSet
 ): Component(associated) {
     Load(file);
@@ -18,17 +20,10 @@ TileMap::~TileMap() {
     delete this->tileSet;
 }
 
-void TileMap::Load(const char* file) {
+void TileMap::Load(std::string file) {
     // read file
     std::ifstream f;
-    f.open(file);
-    if (!f.is_open()) {
-        char buff[90];
-        snprintf(buff, sizeof(buff),
-            "Failed opening file for TileMap::Load: %s", file
-        );
-        ThrowError::Error(buff);
-    }
+    f.open(Resources::GetFullPath(file));
 
     // set dimensions
     f >> mapWidth;

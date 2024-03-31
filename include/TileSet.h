@@ -2,13 +2,14 @@
 #define TILE_SET_H
 
 #include "Sprite.h"
+#include <string>
 
 class TileSet {
 public:
     TileSet(
         int tileWidth,
         int tileHeight,
-        const char* file
+        std::string file
     );
     ~TileSet();
     void RenderTile(

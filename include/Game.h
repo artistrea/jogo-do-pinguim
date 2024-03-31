@@ -7,7 +7,7 @@
 
 class Game {
 private:
-    Game(const char* title, int width, int height);
+    Game(std::string title, int width, int height);
     static Game *instance;
     SDL_Window* window;
     SDL_Renderer* renderer;

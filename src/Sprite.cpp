@@ -1,9 +1,11 @@
 #include "ThrowError.h"
 #include "Sprite.h"
 #include "Game.h"
+#include "Resources.h"
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <string>
 
 bool Sprite::Is(std::string s) {
     return s == "Sprite";
@@ -20,24 +22,15 @@ Sprite::Sprite(GameObject& associated):
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject& associated, const char* file): Component(associated) {
+Sprite::Sprite(GameObject& associated, std::string file): Component(associated) {
     texture = nullptr;
     Open(file);
 }
 
-Sprite::~Sprite() {
-    SDL_DestroyTexture(texture);
-}
+Sprite::~Sprite() {}
 
-void Sprite::Open(const char* file) {
-    if (IsOpen()) {
-        SDL_DestroyTexture(texture);
-    }
-
-    texture = IMG_LoadTexture(
-        Game::GetInstance().GetRenderer(),
-        file
-    );
+void Sprite::Open(std::string file) {
+    texture = Resources::GetImage(file);
 
     if (!IsOpen()) {
         ThrowError::SDL_Error();

@@ -10,13 +10,12 @@ TileSet::TileSet(
     int tileWidth,
     int tileHeight,
     std::string file
-): tileWidth(tileWidth), tileHeight(tileHeight) {
+): tileSetGameObj(new GameObject()), tileWidth(tileWidth), tileHeight(tileHeight) {
     if (tileHeight <= 0 || tileWidth <= 0) ThrowError::Error("TileSet cannot have dimension <= 0");
 
-    GameObject* gameObj = new GameObject();
-    tileSet = new Sprite(*gameObj, file);
+    tileSet = new Sprite(*tileSetGameObj, file);
 
-    gameObj->AddComponent(
+    tileSetGameObj->AddComponent(
         tileSet
     );
 
@@ -25,7 +24,7 @@ TileSet::TileSet(
 }
 
 TileSet::~TileSet() {
-    delete tileSet;
+    delete tileSetGameObj;
 }
 
 void TileSet::RenderTile(

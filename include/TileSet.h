@@ -21,6 +21,7 @@ public:
     int GetTileHeight();
 
 private:
+    GameObject* tileSetGameObj;
     Sprite* tileSet;
     int rows, columns,
         tileWidth, tileHeight;

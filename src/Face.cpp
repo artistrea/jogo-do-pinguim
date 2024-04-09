@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Face.h"
 #include "Sound.h"
+#include "InputManager.h"
 
 Face::Face(GameObject& associated): Component(associated), hitpoints(30), isDying(false) {}
 
@@ -35,6 +36,17 @@ void Face::Update(double dt) {
         ) return;
 
         associated.RequestDelete();
+        return;
+    }
+
+    InputManager &inputManager = InputManager::GetInstance();
+    if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
+        if (associated.box.Contains(
+            Vec2({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() })
+            )
+        ) {
+            Damage(std::rand()%10 + 10);
+        }
     }
 }
 

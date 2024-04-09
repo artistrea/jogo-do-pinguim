@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "State.h"
 #include "Resources.h"
+#include "InputManager.h"
+
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -92,8 +94,11 @@ Game::~Game() {
 
 void Game::Run() {
     state->LoadAssets();
+    InputManager &inputManager =  InputManager::GetInstance();
 
     while (!state->QuitRequested()) {
+        inputManager.Update();
+        
         int res = SDL_RenderClear(renderer);
         if (res) ThrowError::SDL_Error();
 

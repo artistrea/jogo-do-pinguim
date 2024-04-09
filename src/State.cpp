@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Sprite.h"
 #include "Sound.h"
+#include "Camera.h"
 #include "Music.h"
 #include "Face.h"
 #include "TileMap.h"
@@ -14,7 +15,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-State::State(): music(), objectArray() {
+State::State(): camera(), music(), objectArray() {
     quitRequested = false;
 }
 
@@ -49,7 +50,7 @@ void State::LoadAssets() {
     SDL_Log("finished loading assets");
 }
 
-void State::Update(float dt) {
+void State::Update(double dt) {
     InputManager &inputManager =  InputManager::GetInstance();
 
     if (
@@ -63,6 +64,8 @@ void State::Update(float dt) {
         objectArray[i]->Update(dt);
     }
 
+    camera.Update(dt);
+
     for (size_t i=0; i < objectArray.size(); i++) {
         if (!objectArray[i]->IsDead()) continue;
 
@@ -71,8 +74,8 @@ void State::Update(float dt) {
     }
 
     if (inputManager.KeyPress(SPACE_KEY)) {
-        Vec2 spawnAt = Vec2({ inputManager.GetMouseX(), inputManager.GetMouseY() })
-                    +  Vec2({ 0, 200 }).GetRotated(-PI + PI*(rand() % 1001)/500.0);
+        Vec2 spawnAt = Vec2({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() })
+                    +  Vec2({ 0.0, 200.0 }).GetRotated(-PI + PI*(rand() % 1001)/500.0);
         AddObject((int)spawnAt.x, (int)spawnAt.y);
     }
 }

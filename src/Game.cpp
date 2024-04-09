@@ -3,12 +3,14 @@
 #include "State.h"
 #include "Resources.h"
 #include "InputManager.h"
+#include "Camera.h"
 
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_image.h>
 #include <stdexcept>
+#include <stdint.h>
 
 Game *Game::instance = nullptr;
 
@@ -69,6 +71,8 @@ Game::Game(std::string title, int width, int height) {
     }
 
     state = new State();
+    frameStart = 0;
+    dt = 0.0;
 
     SDL_Log("Game loading ended");
 }
@@ -97,12 +101,14 @@ void Game::Run() {
     InputManager &inputManager =  InputManager::GetInstance();
 
     while (!state->QuitRequested()) {
+        CalculateDeltaTime();
+
         inputManager.Update();
         
         int res = SDL_RenderClear(renderer);
         if (res) ThrowError::SDL_Error();
 
-        state->Update(0.0);
+        state->Update(GetDeltaTime());
 
         state->Render();
 
@@ -120,6 +126,19 @@ SDL_Renderer* Game::GetRenderer() {
 
 State& Game::GetState() {
     return *state;
+}
+
+void Game::CalculateDeltaTime() {
+    uint64_t prevFrameStart = frameStart;
+    // SDL_GetTicks "is not recommended as of SDL 2.0.18; use SDL_GetTicks64() instead"
+    // se por acaso você rodar meu jogo por 49 dias seguidos, não vai dar ruim.
+    // É certamente muito útil
+    frameStart = SDL_GetTicks64();
+    dt = (frameStart - prevFrameStart)/1000;
+}
+
+double Game::GetDeltaTime() {
+    return dt;
 }
 
 std::string GAME_TITLE = "Artur Padovesi Piratelli - 211038208";

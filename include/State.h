@@ -1,6 +1,7 @@
 #ifndef STATE_H_
 #define STATE_H_
 #include "Sprite.h"
+#include "Camera.h"
 #include "Music.h"
 #include "GameObject.h"
 #include <vector>
@@ -13,12 +14,13 @@ public:
     ~State();
     bool QuitRequested();
     void LoadAssets();
-    void Update(float dt);
+    void Update(double dt);
     void Render();
 
     void AddObject(int mouseX, int mouseY);
 
 private:
+    Camera camera;
     Music music;
     bool quitRequested;
     std::vector<std::unique_ptr<GameObject>> objectArray;

@@ -7,6 +7,7 @@
 #include "Face.h"
 #include "TileMap.h"
 #include "Constants.h"
+#include "CameraFollower.h"
 #include "InputManager.h"
 #include <SDL2/SDL.h>
 #include <vector>
@@ -32,6 +33,7 @@ void State::LoadAssets() {
 
     GameObject* bg(new GameObject());
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
+    bg->AddComponent(new CameraFollower(*bg));
     objectArray.emplace_back(bg);
 
     GameObject* tilemapObj(new GameObject());

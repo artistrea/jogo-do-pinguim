@@ -1,5 +1,6 @@
 #include "Sound.h"
 #include "Component.h"
+#include "Camera.h"
 #include "GameObject.h"
 #include "Rect.h"
 #include <vector>

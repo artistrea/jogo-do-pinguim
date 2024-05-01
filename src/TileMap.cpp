@@ -1,3 +1,4 @@
+#include "Camera.h"
 #include "TileMap.h"
 #include "Resources.h"
 #include "ThrowError.h"
@@ -5,6 +6,7 @@
 #include <ios>
 #include <string>
 #include <fstream>
+#include <math.h>
 
 TileMap::TileMap(
     GameObject& associated,
@@ -36,10 +38,12 @@ void TileMap::Load(std::string file) {
     // SDL_Log("(%d, %d, %d)", mapWidth, mapHeight, mapDepth);
 
     tileMatrix.reserve(mapWidth * mapHeight * mapDepth);
+    SDL_Log("tileMatrix.size(): %d", tileMatrix.size());
 
     for (int i=0; i < mapDepth; i++) {
         for (int j=0; j < mapHeight; j++) {
             for (int k=0; k < mapWidth; k++) {
+                tileMatrix.push_back(-1);
                 f >> At(k,j,i);
                 At(k,j,i)--;
                 // SDL_Log("(%d, %d, %d) = %d", k, j, i, At(k,j,i));
@@ -52,6 +56,7 @@ void TileMap::Load(std::string file) {
         }
         f.ignore(1, '\n');
     }
+    SDL_Log("tileMatrix.size(): %d", tileMatrix.size());
 }
 
 void TileMap::SetTileSet(TileSet* tileSet) {
@@ -63,11 +68,17 @@ int& TileMap::At(int x, int y, int z) {
 }
 
 void TileMap::Render() {
-    RenderLayer(
-        0,
-        associated.box.topLeftCorner.x,
-        associated.box.topLeftCorner.y
-    );
+    // SDL_Log("layers: %d", layers);
+    // SDL_Log("tileMatrix.size()render: %d", tileMatrix.size());
+    // SDL_Log("mapHeight: %d", mapHeight);
+
+    for (int z = 0; z < mapDepth; z++) {
+        RenderLayer(
+            z,
+            Camera::pos.x + Camera::pos.x * 0.4 * z,
+            Camera::pos.y + Camera::pos.y * 0.4 * z
+        );
+    }
 }
 
 void TileMap::RenderLayer(
@@ -82,8 +93,8 @@ void TileMap::RenderLayer(
             //     SDL_Log("Rendering tile at (%d, %d, %d) = %d", j, i, layer, At(j, i, layer));
             tileSet->RenderTile(
                 At(j, i, layer),
-                tileSet->GetTileWidth()*j,
-                tileSet->GetTileHeight()*i
+                tileSet->GetTileWidth()*j - cameraX,
+                tileSet->GetTileHeight()*i - cameraY
             );
         }
     }
@@ -102,7 +113,7 @@ int TileMap::GetDepth() {
 }
 
 void TileMap::Update(double dt) {
-
+    // this->associated.box.topLeftCorner = Camera::pos;
 }
 
 bool TileMap::Is(std::string type) {

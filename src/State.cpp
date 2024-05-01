@@ -15,7 +15,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-State::State(): camera(), music(), objectArray() {
+State::State(): music(), objectArray() {
     quitRequested = false;
 }
 
@@ -60,11 +60,11 @@ void State::Update(double dt) {
         quitRequested = true;
     }
 
+    Camera::Update(dt);
+
     for (size_t i=0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }
-
-    camera.Update(dt);
 
     for (size_t i=0; i < objectArray.size(); i++) {
         if (!objectArray[i]->IsDead()) continue;
@@ -92,8 +92,8 @@ void State::AddObject(int mouseX, int mouseY) {
     enemy->AddComponent(new Sound(*enemy, "audio/boom.wav"));
     enemy->AddComponent(new Face(*enemy));
 
-	enemy->box.topLeftCorner = { (double)mouseX, (double)mouseY };
-
+	enemy->box.topLeftCorner = (Camera::pos) + Vec2({ (double)mouseX, (double)mouseY });
     objectArray.emplace_back(enemy);
+    Camera::Follow(enemy);
 }
 

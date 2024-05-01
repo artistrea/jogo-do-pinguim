@@ -22,6 +22,7 @@ public:
     ~Game();
     void Run();
     SDL_Renderer* GetRenderer();
+    SDL_Window* GetWindow();
     State& GetState();
     static Game& GetInstance();
     double GetDeltaTime();

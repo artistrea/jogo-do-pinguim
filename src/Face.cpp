@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <SDL2/SDL_mixer.h>
+#include "Camera.h"
 #include "Component.h"
 #include "Face.h"
 #include "Sound.h"
@@ -31,6 +32,7 @@ bool Face::IsDying() {
 
 void Face::Update(double dt) {
     if (isDying) {
+        Camera::Unfollow(&associated);
         if (
             ((Sound* )associated.GetComponent("Sound"))->IsPlaying()
         ) return;
@@ -39,9 +41,14 @@ void Face::Update(double dt) {
         return;
     }
 
+    Rect relativeBox(
+        associated.box.topLeftCorner + (Camera::pos * -1),
+        associated.box.dimensions
+    );
+
     InputManager &inputManager = InputManager::GetInstance();
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        if (associated.box.Contains(
+        if (relativeBox.Contains(
             Vec2({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() })
             )
         ) {

@@ -3,7 +3,6 @@
 #include "State.h"
 #include "Resources.h"
 #include "InputManager.h"
-#include "Camera.h"
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -100,11 +99,12 @@ void Game::Run() {
     state->LoadAssets();
     InputManager &inputManager =  InputManager::GetInstance();
 
+    SDL_Log("reached while");
     while (!state->QuitRequested()) {
         CalculateDeltaTime();
 
         inputManager.Update();
-        
+
         int res = SDL_RenderClear(renderer);
         if (res) ThrowError::SDL_Error();
 
@@ -114,7 +114,7 @@ void Game::Run() {
 
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(33);
+        SDL_Delay(16);
     }
 
     delete instance;
@@ -122,6 +122,10 @@ void Game::Run() {
 
 SDL_Renderer* Game::GetRenderer() {
     return renderer;
+}
+
+SDL_Window* Game::GetWindow() {
+    return window;
 }
 
 State& Game::GetState() {
@@ -134,7 +138,8 @@ void Game::CalculateDeltaTime() {
     // se por acaso você rodar meu jogo por 49 dias seguidos, não vai dar ruim.
     // É certamente muito útil
     frameStart = SDL_GetTicks64();
-    dt = (frameStart - prevFrameStart)/1000;
+    dt = (frameStart - prevFrameStart);
+    dt/=1000;
 }
 
 double Game::GetDeltaTime() {

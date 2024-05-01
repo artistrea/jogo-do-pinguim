@@ -1,4 +1,5 @@
 #include "ThrowError.h"
+#include "Camera.h"
 #include "Sprite.h"
 #include "Game.h"
 #include "Resources.h"
@@ -68,7 +69,7 @@ void Sprite::Render(double x, double y) {
 }
 
 void Sprite::Render() {
-    Render(associated.box.topLeftCorner.x, associated.box.topLeftCorner.y);
+    Render(associated.box.topLeftCorner.x + (Camera::pos.x * -1), associated.box.topLeftCorner.y + (Camera::pos.y * -1));
 }
 
 int Sprite::GetWidth() {

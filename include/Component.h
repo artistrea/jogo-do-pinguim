@@ -10,12 +10,14 @@ class Component {
 public:
     Component(GameObject &associated);
     virtual ~Component();
+    void virtual Start();
     void virtual Update(double dt) = 0;
     void virtual Render() = 0;
     bool virtual Is(std::string type) = 0;
 
 protected:
     GameObject &associated;
+    bool started;
 };
 
 #endif

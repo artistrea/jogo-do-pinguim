@@ -96,7 +96,8 @@ Game::~Game() {
 }
 
 void Game::Run() {
-    state->LoadAssets();
+    state->Start();
+
     InputManager &inputManager =  InputManager::GetInstance();
 
     SDL_Log("reached while");

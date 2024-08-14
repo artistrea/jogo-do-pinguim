@@ -7,10 +7,20 @@
 #include <memory>
 #include <SDL2/SDL.h>
 
-GameObject::GameObject(): components(), isDead(false) {}
+GameObject::GameObject(): components(), isDead(false), started(false) {}
 
 GameObject::~GameObject() {
     components.clear();
+}
+
+void GameObject::Start() {
+    if (this->started) return;
+
+    for (auto &comp: this->components) {
+        comp->Start();
+    }
+
+    this->started = true;
 }
 
 void GameObject::Update(double dt) {
@@ -34,6 +44,8 @@ void GameObject::RequestDelete() {
 }
 
 void GameObject::AddComponent(Component* cpt) {
+    if (this->started) cpt->Start();
+
     components.emplace_back(cpt);
 }
 

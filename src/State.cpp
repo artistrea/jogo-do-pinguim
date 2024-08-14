@@ -16,9 +16,24 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-State::State(): music(), objectArray() {
-    quitRequested = false;
+State::State():
+    music(),
+    objectArray(),
+    quitRequested(false),
+    started(false) {}
+
+void State::Start() {
+    if (this->started) return;
+
+    this->LoadAssets();
+
+    for (auto &obj : this->objectArray) {
+        obj->Start();
+    }
+
+    started = true;
 }
+
 
 State::~State() {
     objectArray.clear();
@@ -78,7 +93,15 @@ void State::Update(double dt) {
     if (inputManager.KeyPress(SPACE_KEY)) {
         Vec2 spawnAt = Vec2({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() })
                     +  Vec2({ 0.0, 200.0 }).GetRotated(-PI + PI*(rand() % 1001)/500.0);
-        AddObject((int)spawnAt.x, (int)spawnAt.y);
+        GameObject* enemy(new GameObject());
+        enemy->AddComponent(new Sprite(*enemy, "img/penguinface.png"));
+        enemy->AddComponent(new Sound(*enemy, "audio/boom.wav"));
+        enemy->AddComponent(new Face(*enemy));
+
+    	enemy->box.topLeftCorner = (Camera::pos) + Vec2({ spawnAt.x, spawnAt.y });
+        // Camera::Follow(enemy);
+
+        AddObject(enemy);
     }
 }
 
@@ -88,14 +111,22 @@ void State::Render() {
     }
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    GameObject* enemy(new GameObject());
-    enemy->AddComponent(new Sprite(*enemy, "img/penguinface.png"));
-    enemy->AddComponent(new Sound(*enemy, "audio/boom.wav"));
-    enemy->AddComponent(new Face(*enemy));
+std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
+    if (this->started) go->Start();
 
-	enemy->box.topLeftCorner = (Camera::pos) + Vec2({ (double)mouseX, (double)mouseY });
-    objectArray.emplace_back(enemy);
-    Camera::Follow(enemy);
+    std::shared_ptr<GameObject> shared_go(go);
+
+    objectArray.push_back(shared_go);
+
+    return std::weak_ptr<GameObject>(shared_go);
 }
 
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {
+    for (auto &obj: this->objectArray) {
+        if (obj.get() == go) {
+            return std::weak_ptr<GameObject>(obj);
+        }
+    }
+
+    return std::weak_ptr<GameObject>();
+}

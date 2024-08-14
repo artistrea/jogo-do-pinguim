@@ -4,7 +4,6 @@
 #include "Sound.h"
 #include "Camera.h"
 #include "Music.h"
-#include "Face.h"
 #include "TileMap.h"
 #include "Constants.h"
 #include "CameraFollower.h"
@@ -88,20 +87,6 @@ void State::Update(double dt) {
 
         objectArray.erase(objectArray.begin() + i);
         i--;
-    }
-
-    if (inputManager.KeyPress(SPACE_KEY)) {
-        Vec2 spawnAt = Vec2({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() })
-                    +  Vec2({ 0.0, 200.0 }).GetRotated(-PI + PI*(rand() % 1001)/500.0);
-        GameObject* enemy(new GameObject());
-        enemy->AddComponent(new Sprite(*enemy, "img/penguinface.png"));
-        enemy->AddComponent(new Sound(*enemy, "audio/boom.wav"));
-        enemy->AddComponent(new Face(*enemy));
-
-    	enemy->box.topLeftCorner = (Camera::pos) + Vec2({ spawnAt.x, spawnAt.y });
-        // Camera::Follow(enemy);
-
-        AddObject(enemy);
     }
 }
 

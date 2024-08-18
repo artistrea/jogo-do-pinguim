@@ -11,6 +11,7 @@ public:
     Rect(double x, double y, double w, double h);
     Rect(Vec2 topLeftCorner, Vec2 dimensions);
 
+    Vec2 GetCenter();
 
     bool Contains(Vec2 point);
 };

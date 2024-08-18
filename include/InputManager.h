@@ -17,6 +17,7 @@
 #define SPACE_KEY           SDLK_SPACE
 #define ESCAPE_KEY          SDLK_ESCAPE
 #define LEFT_MOUSE_BUTTON   SDL_BUTTON_LEFT
+#define RIGHT_MOUSE_BUTTON  SDL_BUTTON_RIGHT
 
 class InputManager {
 public:

@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Sprite.h"
 #include "Sound.h"
+#include "Alien.h"
 #include "Camera.h"
 #include "Music.h"
 #include "TileMap.h"
@@ -17,9 +18,10 @@
 
 State::State():
     music(),
-    objectArray(),
     quitRequested(false),
-    started(false) {}
+    started(false),
+    objectArray()
+    {}
 
 void State::Start() {
     if (this->started) return;
@@ -59,6 +61,11 @@ void State::LoadAssets() {
 	tilemapObj->box.dimensions = {64,64};
 
     objectArray.emplace_back(tilemapObj);
+
+    GameObject *alien(new GameObject());
+    alien->AddComponent(new Alien(*alien, 0));
+    alien->box.topLeftCorner = Vec2(512, 300);
+    objectArray.emplace_back(alien);
 
     music.Open("audio/stageState.ogg");
 

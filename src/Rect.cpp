@@ -19,6 +19,10 @@ bool Rect::Contains(Vec2 point) {
             point.y <= maxY && point.y >= minY;
 }
 
+Vec2 Rect::GetCenter() {
+    return this->topLeftCorner + (this->dimensions / 2);
+}
+
 // 1, 1
 // 3, 3
 // 2, 2

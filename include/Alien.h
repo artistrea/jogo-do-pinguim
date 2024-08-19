@@ -17,7 +17,6 @@ public:
 private:
     int hp;
     Vec2 speed;
-    // Parece sem sentido usar weak pointer na classe que gerencia o lifetime do ponteiro...
     std::vector<std::weak_ptr<GameObject>> minionArray;
 
     class Action {

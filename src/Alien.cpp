@@ -1,11 +1,13 @@
 #include <iostream>
 #include <SDL2/SDL_mixer.h>
 #include "Constants.h"
+#include "Minion.h"
 #include "Camera.h"
 #include "Component.h"
 #include "Alien.h"
 #include "Sound.h"
 #include "Sprite.h"
+#include "State.h"
 #include "InputManager.h"
 
 Alien::Alien(GameObject& associated, int nMinions):
@@ -19,26 +21,23 @@ Alien::Alien(GameObject& associated, int nMinions):
 void Alien::Start() {
     if (this->started) return;
 
-    // // TODO: criar os minions
-    // Vec2 dist{0.0, 10.0}, center(0.0, 0.0), pos;
+    double radBetweenMinions = (2 * PI) / (this->minionArray.size());
+    State& stateInstance = State::GetInstance();
+    std::weak_ptr<GameObject> associatedSharedPtr = stateInstance.GetObjectPtr(&this->associated);
 
-    // double radBetweenMinions = (2 * PI) / (this->minionArray.size());
-    // for (size_t i = 0; i < this->minionArray.size(); i++) {
-    //     double deg = radBetweenMinions * i;
-    //     pos = center + dist.GetRotated(deg);
-    //     this->minionArray[i];
-    // }
+    for (size_t i = 0; i < this->minionArray.size(); i++) {
+        double deg = radBetweenMinions * i;
+        auto go = new GameObject();
+
+        go->AddComponent(new Minion(*go, associatedSharedPtr, deg));
+
+        this->minionArray[i] = stateInstance.AddObject(go);
+    }
 
     this->started = true;
 }
 
 Alien::~Alien() {
-    for (size_t i = 0; i < this->minionArray.size(); i++) {
-        // sla como lidar com weak pointer aqui.
-        // Parece sem sentido usar weak pointer na classe que gerencia o lifetime do ponteiro...
-        // free(&(this->minionArray[i]));
-    }
-
     this->minionArray.clear();
 }
 

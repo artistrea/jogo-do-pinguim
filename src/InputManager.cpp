@@ -132,6 +132,7 @@ InputManager::InputManager():
 }
 
 InputManager::~InputManager() {
+    // TODO: verify if this is actually needed or if deletes input manager twice (which prob is undefined behavior)
     delete instance;
 }
 

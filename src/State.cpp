@@ -16,12 +16,28 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+State& State::GetInstance() {
+    if (!instance) {
+        instance = new State();
+    }
+
+    return *instance;
+}
+
+State *State::instance = nullptr;
+
 State::State():
     music(),
     quitRequested(false),
     started(false),
     objectArray()
-    {}
+    {
+    if (State::instance != nullptr) {
+        ThrowError::Error("Tried instancing Game more than once!");
+    }
+
+    State::instance = this;
+}
 
 void State::Start() {
     if (this->started) return;
@@ -63,7 +79,7 @@ void State::LoadAssets() {
     objectArray.emplace_back(tilemapObj);
 
     GameObject *alien(new GameObject());
-    alien->AddComponent(new Alien(*alien, 0));
+    alien->AddComponent(new Alien(*alien, 3));
     alien->box.topLeftCorner = Vec2(512, 300);
     objectArray.emplace_back(alien);
 

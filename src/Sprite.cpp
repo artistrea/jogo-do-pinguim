@@ -17,13 +17,12 @@ void Sprite::Update(double dt) {
 }
 
 
-
 Sprite::Sprite(GameObject& associated):
-    Component(associated), clipRect() {
+    Component(associated), clipRect(), scale(1.0, 1.0), rotationAngle(0.0) {
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject& associated, std::string file): Component(associated) {
+Sprite::Sprite(GameObject& associated, std::string file): Component(associated), scale(1.0, 1.0), rotationAngle(0.0) {
     texture = nullptr;
     Open(file);
 }
@@ -73,11 +72,36 @@ void Sprite::Render() {
 }
 
 int Sprite::GetWidth() {
-    return width;
+    return width * scale.x;
 }
 int Sprite::GetHeight() {
-    return height;
+    return height * scale.y;
 }
 bool Sprite::IsOpen() {
     return texture != nullptr && texture != NULL;
+}
+
+// if one of the axis is eq to 0.0, won't set axis value
+void Sprite::SetScale(Vec2 scale) {
+    if (scale.x != 0.0) {
+        // TODO: fix this calculation for when previous scale != (1,1)
+        this->associated.box.topLeftCorner.x += (1 - scale.x) * this->associated.box.topLeftCorner.x / 2;
+    }
+    if (scale.y != 0.0) {
+        this->associated.box.topLeftCorner.y += (1 - scale.y) * this->associated.box.topLeftCorner.y / 2;
+    }
+    if (scale.x != 0.0) {
+        this->scale.x = scale.x;
+    }
+
+    if (scale.y != 0.0) {
+        this->scale.y = scale.y;
+    }
+
+    this->associated.box.dimensions.y = this->GetHeight();
+    this->associated.box.dimensions.x = this->GetWidth();
+}
+
+Vec2 Sprite::GetScale() {
+    return scale;
 }

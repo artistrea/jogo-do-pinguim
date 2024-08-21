@@ -18,17 +18,21 @@ public:
     int GetWidth();
     int GetHeight();
     bool IsOpen();
+    // TODO: either change how this works or make the fact that this mutates the associated GameObject more explicit
+    void SetScale(Vec2 scale);
+    Vec2 GetScale();
 
     void Update(double dt);
     void Render();
     void Render(double x, double y);
     bool Is(std::string type);
 
-    
 private:
     SDL_Texture* texture;
     int width, height;
     SDL_Rect clipRect;
+    Vec2 scale;
+    double rotationAngle;
 };
 
 #endif

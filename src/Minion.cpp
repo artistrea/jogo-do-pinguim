@@ -16,7 +16,11 @@ Minion::Minion(
         Component(associated),
         alienCenter(alienCenter),
         arc(arcOffsetDeg) {
-    associated.AddComponent(new Sprite(associated, "img/minion.png"));
+    auto *sprite = new Sprite(associated, "img/minion.png");
+
+    sprite->SetScale(Vec2{ 0.8, 0.8 });
+
+    associated.AddComponent(sprite);
 }
 
 Minion::~Minion() {}

@@ -15,8 +15,8 @@ Alien::Alien(GameObject& associated, int nMinions):
     Component(associated), hp(30), speed(0.0, 0.0),
     minionArray(nMinions), taskQueue()
 {
-    // ALIEN CREATE
-    associated.AddComponent(new Sprite(associated, "img/alien.png"));
+    auto *sprite = new Sprite(associated, "img/alien.png");
+    associated.AddComponent(sprite);
 }
 
 void Alien::Start() {

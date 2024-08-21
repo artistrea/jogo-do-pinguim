@@ -83,18 +83,18 @@ void Alien::Update(double dt) {
         }
 
         case Action::ActionType::MOVE: {
-            this->speed = (action.pos +  this->associated.box.topLeftCorner * -1);
+            this->speed = (action.pos +  this->associated.box.GetCenter() * -1);
             this->speed = this->speed.GetNormalized() * movespeed * dt;
             Rect positionChange(
-                this->associated.box.topLeftCorner, this->speed
+                this->associated.box.GetCenter(), this->speed
             );
 
             if (positionChange.Contains(action.pos)) {
-                this->associated.box.topLeftCorner = action.pos;
+                this->associated.box.topLeftCorner = action.pos + (this->associated.box.GetCenter() + (this->associated.box.topLeftCorner * -1)) * -1;
                 this->taskQueue.pop();
             } else {
                 this->associated.box.topLeftCorner =
-                    positionChange.topLeftCorner + positionChange.dimensions;
+                    this->associated.box.topLeftCorner + positionChange.dimensions;
             }
             break;
         }

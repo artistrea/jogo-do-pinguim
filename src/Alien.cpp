@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL_mixer.h>
+#include <time.h>
 #include "Constants.h"
 #include "Minion.h"
 #include "Camera.h"
@@ -64,18 +65,26 @@ void Alien::Update(double dt) {
         }
     }
 
-    double movespeed = 10.0;
+    double movespeed = 256.0;
     if (this->taskQueue.size()) {
         Action action = this->taskQueue.front();
         switch (action.type) {
-        case Action::ActionType::SHOOT:
-            /* TODO */
+        case Action::ActionType::SHOOT: {
             this->taskQueue.pop();
+
+            srand(time(NULL));
+            auto minionAssociatedGo = this->minionArray[rand() % this->minionArray.size()].lock().get();
+            if (minionAssociatedGo == NULL) break;
+
+            Minion* minion = (Minion*)minionAssociatedGo->GetComponent("Minion");
+            minion->Shoot(action.pos);
+
             break;
+        }
 
         case Action::ActionType::MOVE: {
             this->speed = (action.pos +  this->associated.box.topLeftCorner * -1);
-            this->speed = this->speed.GetNormalized() * movespeed;
+            this->speed = this->speed.GetNormalized() * movespeed * dt;
             Rect positionChange(
                 this->associated.box.topLeftCorner, this->speed
             );

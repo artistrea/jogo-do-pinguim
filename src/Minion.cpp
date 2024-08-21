@@ -1,8 +1,10 @@
 #include <string>
+#include "Bullet.h"
 #include "Component.h"
 #include "Rect.h"
 #include "Constants.h"
 #include "Sprite.h"
+#include "State.h"
 #include "Vec2.h"
 #include "GameObject.h"
 #include "Minion.h"
@@ -48,5 +50,14 @@ bool Minion::Is(std::string type) {
 }
 
 void Minion::Shoot(Vec2 target) {
-    // TODO: actual shoot
+    Vec2 speed = (target + this->associated.box.GetCenter() * -1);
+    speed = speed.GetNormalized() * 512.0;
+
+    auto &state = State::GetInstance();
+    auto go = new GameObject();
+    go->box = this->associated.box;
+
+    go->AddComponent(new Bullet(*go, speed, 1, 1024.0, "img/minionbullet1.png"));
+
+    state.AddObject(go);
 }

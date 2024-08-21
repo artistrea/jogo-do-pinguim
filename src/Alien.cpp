@@ -76,12 +76,20 @@ void Alien::Update(double dt) {
         switch (action.type) {
         case Action::ActionType::SHOOT: {
             this->taskQueue.pop();
+            Minion* closestMinionToShootLocation = nullptr;
+            double closestDistante = __DBL_MAX__;
 
-            auto minionAssociatedGo = this->minionArray[0].lock().get();
-            if (minionAssociatedGo == NULL) break;
-
-            Minion* minion = (Minion*)minionAssociatedGo->GetComponent("Minion");
-            minion->Shoot(action.pos);
+            for (size_t i=0; i<this->minionArray.size(); i++) {
+                auto minionAssociatedGo = this->minionArray[i].lock().get();
+                if (minionAssociatedGo == NULL) continue;
+                double dist = (action.pos + (minionAssociatedGo->box.GetCenter() * -1)).GetAbs();
+                if (dist < closestDistante) {
+                    closestMinionToShootLocation = (Minion*)minionAssociatedGo->GetComponent("Minion");
+                    closestDistante = dist;
+                }
+            }
+            // THIS SHOULD NEVER BE NULLPTR, SO LET THE UNDEFINED BEHAVIOR HAPPEN AND F THAT PLAYER AHAHAHAHAH
+            closestMinionToShootLocation->Shoot(action.pos);
 
             break;
         }

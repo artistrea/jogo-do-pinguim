@@ -68,6 +68,9 @@ Vec2& Vec2::operator/=(const double& scalar) {
 double Vec2::GetAbs() {
     return sqrt(x*x + y*y);
 }
+double Vec2::GetAbs() const {
+    return sqrt(x*x + y*y);
+}
 
 Vec2 Vec2::GetNormalized() {
     return (*this) / this->GetAbs();

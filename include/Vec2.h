@@ -23,6 +23,7 @@ public:
     Vec2& operator*=(const double &scalar);
     Vec2& operator/=(const double &scalar);
 
+    double GetAbs() const;
     double GetAbs();
     Vec2 GetNormalized();
 

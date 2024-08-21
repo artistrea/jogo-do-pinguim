@@ -67,7 +67,7 @@ void Minion::Shoot(Vec2 target) {
     auto &state = State::GetInstance();
     auto go = new GameObject();
 
-    go->AddComponent(new Bullet(*go, speed, 1, 1024.0, "img/minionbullet1.png"));
+    go->AddComponent(new Bullet(*go, speed, 1, 1024.0, "img/minionbullet2.png"));
 
     go->box.topLeftCorner.x = this->associated.box.GetCenter().x - go->box.dimensions.x / 2;
     go->box.topLeftCorner.y = this->associated.box.GetCenter().y - go->box.dimensions.y / 2;

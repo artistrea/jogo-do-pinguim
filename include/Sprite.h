@@ -8,7 +8,7 @@
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
-    Sprite(GameObject& associated, std::string file);
+    Sprite(GameObject& associated, std::string file, int frameCount=1, double frameTime=1.0);
     ~Sprite();
     void Open(std::string file);
     void SetClip(
@@ -22,6 +22,10 @@ public:
     void SetScale(Vec2 scale);
     Vec2 GetScale();
 
+    void SetFrame(int frame);
+    void SetFrameCount(int frameCount);
+    void SetFrameTime(double frameTime);
+
     void Update(double dt);
     void Render();
     void Render(double x, double y);
@@ -32,6 +36,10 @@ private:
     int width, height;
     SDL_Rect clipRect;
     Vec2 scale;
+    int frameCount;
+    int currentFrame;
+    double timeElapsed;
+    double frameTime;
 };
 
 #endif

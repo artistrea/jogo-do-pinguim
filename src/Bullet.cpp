@@ -15,7 +15,7 @@ Bullet::Bullet(
     std::string spriteSrc
     ): Component(associated), speed(speed),
     distanceLeft(maxDistance), damage(damage) {
-        associated.AddComponent(new Sprite(associated, spriteSrc));
+    associated.AddComponent(new Sprite(associated, spriteSrc, 3, 0.1));
 }
 
 void Bullet::Update(double dt) {

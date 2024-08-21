@@ -13,7 +13,11 @@ bool Sprite::Is(std::string s) {
 }
 
 void Sprite::Update(double dt) {
-
+    timeElapsed += dt;
+    if (timeElapsed > frameTime) {
+        timeElapsed -= frameTime;
+        SetFrame((currentFrame + 1) % frameCount);
+    }
 }
 
 
@@ -22,9 +26,32 @@ Sprite::Sprite(GameObject& associated):
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject& associated, std::string file): Component(associated), scale(1.0, 1.0) {
+Sprite::Sprite(GameObject& associated, std::string file, int frameCount, double frameTime): Component(associated), scale(1.0, 1.0), 
+    frameCount(frameCount), currentFrame(0),
+    timeElapsed(0.0), frameTime(frameTime) {
     texture = nullptr;
     Open(file);
+    SetFrame(0);
+}
+
+void Sprite::SetFrame(int frame) {
+    if (frame >= this->frameCount) {
+        SDL_Log("frame=%d; this->frameCount=%d", frame, this->frameCount);
+        ThrowError::Error("Sprite::SetFrame frame >= this->frameCount");
+    }
+
+    this->currentFrame = frame;
+
+    SetClip(frame * this->width / this->frameCount, 0, this->width / this->frameCount, height);
+}
+
+void Sprite::SetFrameCount(int frameCount) {
+    this->frameCount = frameCount;
+    SetFrame(0);
+}
+
+void Sprite::SetFrameTime(double frameTime) {
+    this->frameTime = frameTime;
 }
 
 Sprite::~Sprite() {}
@@ -48,7 +75,7 @@ void Sprite::SetClip(
 ) {
     clipRect = {x, y, w, h};
 
-    associated.box.dimensions = {(double)w, (double)h};
+    associated.box.dimensions = {(double)w*scale.x, (double)h*scale.y};
 }
 
 void Sprite::Render(double x, double y) {
@@ -75,7 +102,7 @@ void Sprite::Render() {
 }
 
 int Sprite::GetWidth() {
-    return width * scale.x;
+    return width / frameCount * scale.x;
 }
 int Sprite::GetHeight() {
     return height * scale.y;

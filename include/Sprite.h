@@ -32,7 +32,6 @@ private:
     int width, height;
     SDL_Rect clipRect;
     Vec2 scale;
-    double rotationAngle;
 };
 
 #endif

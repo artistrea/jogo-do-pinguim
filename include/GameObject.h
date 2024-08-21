@@ -23,6 +23,7 @@ public:
     Component* GetComponent(std::string type);
 
     Rect box;
+    double angleDeg;
 
 private:
     std::vector<std::unique_ptr<Component>> components;

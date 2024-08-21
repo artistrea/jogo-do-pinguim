@@ -18,7 +18,11 @@ Minion::Minion(
         arc(arcOffsetDeg) {
     auto *sprite = new Sprite(associated, "img/minion.png");
 
-    sprite->SetScale(Vec2{ 0.8, 0.8 });
+    this->associated.angleDeg = arcOffsetDeg * 180 / PI;
+    // escala aleatória entre [1.0, 1.5]
+    double newScale = (double)((rand() % 51) + 100) / 100.0;
+
+    sprite->SetScale(Vec2{ newScale, newScale });
 
     associated.AddComponent(sprite);
 }
@@ -36,9 +40,12 @@ void Minion::Update(double dt) {
     Vec2 rotateAround = lockedAlien->box.GetCenter();
 
     double velocity = PI/3;
-    Vec2 newCenter(0, 130);
+    Vec2 newCenter(0, 140);
     arc += velocity * dt;
     if (arc > PI) arc -= 2*PI;
+
+    // rotate around itself
+    this->associated.angleDeg = arc * 180 / PI;
 
     newCenter = rotateAround + newCenter.GetRotated(arc);
 

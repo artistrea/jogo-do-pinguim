@@ -7,7 +7,7 @@
 #include <memory>
 #include <SDL2/SDL.h>
 
-GameObject::GameObject(): components(), isDead(false), started(false) {}
+GameObject::GameObject(): angleDeg(0.0), components(), isDead(false), started(false) {}
 
 GameObject::~GameObject() {
     components.clear();

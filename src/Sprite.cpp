@@ -18,11 +18,11 @@ void Sprite::Update(double dt) {
 
 
 Sprite::Sprite(GameObject& associated):
-    Component(associated), clipRect(), scale(1.0, 1.0), rotationAngle(0.0) {
+    Component(associated), clipRect(), scale(1.0, 1.0) {
     texture = nullptr;
 }
 
-Sprite::Sprite(GameObject& associated, std::string file): Component(associated), scale(1.0, 1.0), rotationAngle(0.0) {
+Sprite::Sprite(GameObject& associated, std::string file): Component(associated), scale(1.0, 1.0) {
     texture = nullptr;
     Open(file);
 }
@@ -57,11 +57,14 @@ void Sprite::Render(double x, double y) {
     dest.y = y;
     dest.w = associated.box.dimensions.x;
     dest.h = associated.box.dimensions.y;
-    int result = SDL_RenderCopy(
+    int result = SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(),
         texture,
         &clipRect,
-        &dest
+        &dest,
+        this->associated.angleDeg,
+        nullptr,
+        SDL_FLIP_NONE
     );
 
     if (result) ThrowError::SDL_Error();

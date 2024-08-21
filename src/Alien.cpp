@@ -51,6 +51,11 @@ void Alien::Update(double dt) {
 
     if (this->associated.IsDead()) return;
 
+    // rotate around itself
+    double velocityDeg = -20;
+    this->associated.angleDeg += velocityDeg * dt;
+    if (this->associated.angleDeg > 360) this->associated.angleDeg -= 360;
+
     if (inputManager.MousePress(RIGHT_MOUSE_BUTTON) || inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
         Vec2 clickAt({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() });
         clickAt += Camera::pos;
@@ -72,8 +77,7 @@ void Alien::Update(double dt) {
         case Action::ActionType::SHOOT: {
             this->taskQueue.pop();
 
-            srand(time(NULL));
-            auto minionAssociatedGo = this->minionArray[rand() % this->minionArray.size()].lock().get();
+            auto minionAssociatedGo = this->minionArray[0].lock().get();
             if (minionAssociatedGo == NULL) break;
 
             Minion* minion = (Minion*)minionAssociatedGo->GetComponent("Minion");

@@ -1,3 +1,4 @@
+#include "Constants.h"
 #include "Vec2.h"
 #include <math.h>
 #include <iostream>
@@ -82,6 +83,11 @@ Vec2 Vec2::GetRotated(double degInRad) {
     v.y = y * cos(degInRad) + x * sin(degInRad);
 
     return v;
+}
+
+// returns value in [-PI, PI]
+double Vec2::GetRotation() const {
+    return std::atan2(this->y, this->x);
 }
 
 std::ostream & operator<<(std::ostream &os, Vec2 const &v) {

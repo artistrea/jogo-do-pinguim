@@ -2,6 +2,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <time.h>
 #include "Constants.h"
+#include "ThrowError.h"
 #include "Minion.h"
 #include "Camera.h"
 #include "Component.h"
@@ -88,8 +89,11 @@ void Alien::Update(double dt) {
                     closestDistante = dist;
                 }
             }
-            // THIS SHOULD NEVER BE NULLPTR, SO LET THE UNDEFINED BEHAVIOR HAPPEN AND F THAT PLAYER AHAHAHAHAH
-            closestMinionToShootLocation->Shoot(action.pos);
+            if (closestMinionToShootLocation == nullptr) {
+                ThrowError::Error("Alien wanted to shoot, but closestMinionToShootLocation == nullptr");
+            } else {
+                closestMinionToShootLocation->Shoot(action.pos);
+            }
 
             break;
         }

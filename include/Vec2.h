@@ -28,6 +28,7 @@ public:
     Vec2 GetNormalized();
 
     Vec2 GetRotated(double degInRad);
+    double GetRotation() const;
 };
 
 std::ostream & operator<<(std::ostream &os, Vec2 const &v);

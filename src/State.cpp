@@ -81,7 +81,6 @@ void State::LoadAssets() {
 
     objectArray.push_back(std::shared_ptr<GameObject>(tilemapObj));
 
-    // TODO: descobrir por que diabos se colocar isso depois do alien dá ruim..??
     GameObject *penguin(new GameObject());
     penguin->AddComponent(new PenguinBody(*penguin));
     penguin->box.topLeftCorner = Vec2(704, 640);

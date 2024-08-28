@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SDL2/SDL_mixer.h>
 #include <time.h>
+#include "Bullet.h"
+#include "Collider.h"
 #include "Constants.h"
 #include "ThrowError.h"
 #include "Minion.h"
@@ -12,12 +14,28 @@
 #include "State.h"
 #include "InputManager.h"
 
+
+void Alien::NotifyCollision(GameObject& collidedWith) {
+    Bullet *bullet = (Bullet*)collidedWith.GetComponent("Bullet");
+    if (bullet == nullptr) {
+        return;
+    }
+
+    if (bullet->targetsPlayer) {
+        return;
+    }
+
+    this->hp -= bullet->GetDamage();
+}
+
+
 Alien::Alien(GameObject& associated, int nMinions):
     Component(associated), hp(30), speed(0.0, 0.0),
     minionArray(nMinions), taskQueue()
 {
     auto *sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
+    associated.AddComponent(new Collider(associated));
 }
 
 void Alien::Start() {

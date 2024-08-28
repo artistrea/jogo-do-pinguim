@@ -14,6 +14,9 @@ public:
     void Update(double dt);
     void Render();
     bool Is(std::string type);
+
+    void NotifyCollision(GameObject& collidedWith);
+
 private:
     int hp;
     Vec2 speed;

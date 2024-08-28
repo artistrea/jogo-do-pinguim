@@ -48,6 +48,10 @@ Vec2& Vec2::operator+=(const Vec2 &rhs) {
     return *this;
 }
 
+const Vec2 Vec2::operator-(const Vec2& rhs) const {
+   return Vec2(x - rhs.x, y - rhs.y);
+}
+
 Vec2& Vec2::operator*=(const double& scalar) {
     x = scalar * x;
     y = scalar * y;
@@ -77,7 +81,7 @@ Vec2 Vec2::GetNormalized() {
     return (*this) / this->GetAbs();
 }
 
-Vec2 Vec2::GetRotated(double degInRad) {
+Vec2 Vec2::GetRotated(double degInRad) const {
     Vec2 v;
     v.x = x * cos(degInRad) - y * sin(degInRad);
     v.y = y * cos(degInRad) + x * sin(degInRad);

@@ -1,6 +1,8 @@
 #include "PenguinBody.h"
 #include "PenguinCannon.h"
 #include "GameObject.h"
+#include "Bullet.h"
+#include "Collider.h"
 #include "Component.h"
 #include "Constants.h"
 #include "Sprite.h"
@@ -9,11 +11,25 @@
 
 PenguinBody* PenguinBody::player = nullptr;
 
+void PenguinBody::NotifyCollision(GameObject& collidedWith) {
+    Bullet *bullet = (Bullet*)collidedWith.GetComponent("Bullet");
+    if (bullet == nullptr) {
+        return;
+    }
+
+    if (!bullet->targetsPlayer) {
+        return;
+    }
+
+    this->hp -= bullet->GetDamage();
+}
+
 PenguinBody::PenguinBody(GameObject &associated):
     Component(associated), pcannon(), speed(0.0, 0.0),
     linearSpeed(0.0), angleDeg(0.0), hp(20)
 {
     associated.AddComponent(new Sprite(associated, "img/penguin.png"));
+    associated.AddComponent(new Collider(associated));
     this->player = this;
     SDL_Log("built successfully");
 }
@@ -39,6 +55,7 @@ void PenguinBody::Start() {
 void PenguinBody::Update(double dt) {
     if (this->hp <= 0) {
         if (!this->associated.IsDead()) {
+            Camera::Unfollow(&this->associated);
             this->associated.RequestDelete();
         }
 

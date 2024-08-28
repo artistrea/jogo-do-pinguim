@@ -49,6 +49,13 @@ void GameObject::AddComponent(Component* cpt) {
     components.emplace_back(cpt);
 }
 
+void GameObject::NotifyCollision(GameObject& collidedWith) {
+    for (size_t i=0; i<this->components.size(); i++) {
+        this->components[i]->NotifyCollision(collidedWith);
+    }
+}
+
+
 void GameObject::RemoveComponent(Component* cpt) {
     // [TODO]: entender por que que isso dava erro:
     // for (auto iter = components.rbegin(); iter != components.rend(); iter++) {

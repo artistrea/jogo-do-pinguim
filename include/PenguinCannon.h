@@ -13,6 +13,8 @@ public:
     bool Is(std::string type);
 
     void Shoot(Vec2 target);
+
+    void NotifyCollision(GameObject& collidedWith);
 private:
     std::weak_ptr<GameObject> pbody;
     double angleDeg;

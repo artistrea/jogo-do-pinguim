@@ -1,5 +1,6 @@
 #include <string>
 #include "Bullet.h"
+#include "Collider.h"
 #include "Component.h"
 #include "Rect.h"
 #include "Constants.h"
@@ -8,6 +9,14 @@
 #include "Vec2.h"
 #include "GameObject.h"
 #include "Minion.h"
+
+void Minion::NotifyCollision(GameObject& collidedWith) {
+    GameObject* alienGo = this->alienCenter.lock().get();
+
+    if (alienGo != nullptr) {
+        alienGo->NotifyCollision(collidedWith);
+    }
+}
 
 Minion::Minion(
     GameObject &associated,
@@ -25,6 +34,7 @@ Minion::Minion(
     sprite->SetScale(Vec2{ newScale, newScale });
 
     associated.AddComponent(sprite);
+    associated.AddComponent(new Collider(associated));
 }
 
 Minion::~Minion() {}

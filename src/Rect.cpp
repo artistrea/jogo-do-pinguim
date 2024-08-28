@@ -23,6 +23,11 @@ Vec2 Rect::GetCenter() {
     return this->topLeftCorner + (this->dimensions / 2);
 }
 
+void Rect::SetCenter(Vec2 newCenter) {
+    this->topLeftCorner = newCenter - (this->dimensions / 2);
+}
+
+
 // 1, 1
 // 3, 3
 // 2, 2

@@ -18,6 +18,8 @@ public:
     void Render();
     bool Is(std::string);
     void Shoot(Vec2 target);
+
+    void NotifyCollision(GameObject& collidedWith);
 private:
     std::weak_ptr<GameObject> alienCenter;
     double arc;

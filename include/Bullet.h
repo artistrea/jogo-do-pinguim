@@ -18,6 +18,9 @@ public:
     void Render();
     bool Is(std::string type);
     int GetDamage();
+    void NotifyCollision(GameObject& collidedWith);
+
+    bool targetsPlayer;
 
 private:
     Vec2 speed;

@@ -16,6 +16,7 @@ public:
     // bool operator==(const Vec2 &v) const;
 
     const Vec2 operator+(const Vec2& vec) const;
+    const Vec2 operator-(const Vec2& vec) const;
     Vec2& operator+=(const Vec2& v);
 
     const Vec2 operator*(const double &scalar) const;
@@ -27,7 +28,7 @@ public:
     double GetAbs();
     Vec2 GetNormalized();
 
-    Vec2 GetRotated(double degInRad);
+    Vec2 GetRotated(double degInRad) const;
     double GetRotation() const;
 };
 

@@ -9,6 +9,7 @@ public:
     PenguinBody(GameObject &associated);
     ~PenguinBody();
 
+    void NotifyCollision(GameObject &collidedWith);
     void Start();
     void Update(double dt);
     void Render();

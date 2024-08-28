@@ -1,5 +1,6 @@
 #include "ThrowError.h"
 #include "State.h"
+#include "Collision.h"
 #include "Sprite.h"
 #include "Sound.h"
 #include "Alien.h"
@@ -113,6 +114,26 @@ void State::Update(double dt) {
 
     for (size_t i=0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
+    }
+
+    for (size_t i=0; i < objectArray.size(); i++) {
+        if (objectArray[i]->GetComponent("Collider") == nullptr) {
+            continue;
+        }
+
+        for (size_t j=i+1; j < objectArray.size(); j++) {
+            if (objectArray[j]->GetComponent("Collider") == nullptr) {
+                continue;
+            }
+
+            if (Collision::IsColliding(
+                objectArray[i]->box, objectArray[j]->box,
+                objectArray[i]->angleDeg, objectArray[j]->angleDeg)
+            ) {
+                objectArray[i]->NotifyCollision(*objectArray[j].get());
+                objectArray[j]->NotifyCollision(*objectArray[i].get());
+            }
+        }
     }
 
     for (size_t i=0; i < objectArray.size(); i++) {

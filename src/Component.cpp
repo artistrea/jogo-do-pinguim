@@ -11,3 +11,6 @@ void Component::Start() {
 
     started = true;
 }
+void  Component::NotifyCollision(GameObject& collidedWith) {
+    
+}

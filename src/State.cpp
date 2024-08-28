@@ -7,6 +7,7 @@
 #include "Music.h"
 #include "TileMap.h"
 #include "Constants.h"
+#include "PenguinBody.h"
 #include "CameraFollower.h"
 #include "InputManager.h"
 #include <SDL2/SDL.h>
@@ -16,15 +17,16 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+State *State::instance = nullptr;
+
 State& State::GetInstance() {
-    if (!instance) {
-        instance = new State();
+    if (!State::instance) {
+        State::instance = new State();
     }
 
-    return *instance;
+    return *State::instance;
 }
 
-State *State::instance = nullptr;
 
 State::State():
     music(),
@@ -33,10 +35,8 @@ State::State():
     objectArray()
     {
     if (State::instance != nullptr) {
-        ThrowError::Error("Tried instancing Game more than once!");
+        ThrowError::Error("Tried instancing State more than once!");
     }
-
-    State::instance = this;
 }
 
 void State::Start() {
@@ -44,8 +44,10 @@ void State::Start() {
 
     this->LoadAssets();
 
-    for (auto &obj : this->objectArray) {
-        obj->Start();
+    // @important: we cannot use reference because Start() may add new values
+    // INVALID: for (auto const &obj : this->objectArray) {
+    for (size_t i = 0; i < this->objectArray.size(); i++) {
+        this->objectArray[i]->Start();
     }
 
     started = true;
@@ -66,7 +68,7 @@ void State::LoadAssets() {
     GameObject* bg(new GameObject());
     bg->AddComponent(new Sprite(*bg, "img/ocean.jpg"));
     bg->AddComponent(new CameraFollower(*bg));
-    objectArray.emplace_back(bg);
+    objectArray.push_back(std::shared_ptr<GameObject>(bg));
 
     GameObject* tilemapObj(new GameObject());
     TileSet* tileSet(new TileSet(64, 64, "img/tileset.png"));
@@ -76,12 +78,20 @@ void State::LoadAssets() {
 	tilemapObj->box.topLeftCorner = {0,0};
 	tilemapObj->box.dimensions = {64,64};
 
-    objectArray.emplace_back(tilemapObj);
+    objectArray.push_back(std::shared_ptr<GameObject>(tilemapObj));
+
+    // TODO: descobrir por que diabos se colocar isso depois do alien dá ruim..??
+    GameObject *penguin(new GameObject());
+    penguin->AddComponent(new PenguinBody(*penguin));
+    penguin->box.topLeftCorner = Vec2(704, 640);
+    objectArray.push_back(std::shared_ptr<GameObject>(penguin));
 
     GameObject *alien(new GameObject());
     alien->AddComponent(new Alien(*alien, 3));
     alien->box.topLeftCorner = Vec2(512, 300);
-    objectArray.emplace_back(alien);
+    objectArray.push_back(std::shared_ptr<GameObject>(alien));
+
+    Camera::Follow(penguin);
 
     music.Open("audio/stageState.ogg");
 
@@ -124,7 +134,7 @@ std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
 
     std::shared_ptr<GameObject> shared_go(go);
 
-    objectArray.push_back(shared_go);
+    objectArray.emplace_back(shared_go);
 
     return std::weak_ptr<GameObject>(shared_go);
 }

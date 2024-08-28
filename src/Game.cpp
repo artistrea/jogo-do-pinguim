@@ -69,7 +69,7 @@ Game::Game(std::string title, int width, int height) {
         ThrowError::SDL_Error();
     }
 
-    state = new State();
+    state = &State::GetInstance();
     frameStart = 0;
     dt = 0.0;
 

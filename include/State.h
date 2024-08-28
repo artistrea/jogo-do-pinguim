@@ -19,7 +19,7 @@ public:
     void Start();
     std::weak_ptr<GameObject> AddObject(GameObject* go);
     std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
-    static State &GetInstance();
+    static State& GetInstance();
 
 private:
     Music music;

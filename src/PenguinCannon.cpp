@@ -49,7 +49,7 @@ void PenguinCannon::Update(double dt) {
     SDL_Log("timer = %f", shootIntervalTimer.Get());
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        if (shootIntervalTimer.Get() >= 1.0) {
+        if (shootIntervalTimer.Get() >= 0.5) {
             shootIntervalTimer.Restart();
             this->Shoot(pointTowards);
         }

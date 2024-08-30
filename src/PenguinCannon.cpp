@@ -18,8 +18,9 @@ void PenguinCannon::NotifyCollision(GameObject& collidedWith) {
 }
 
 PenguinCannon::PenguinCannon(GameObject &associated, std::weak_ptr<GameObject> penguinBody):
-    Component(associated), pbody(penguinBody), angleDeg(0.0)
+    Component(associated), pbody(penguinBody), angleDeg(0.0), shootIntervalTimer()
 {
+    shootIntervalTimer.Update(1000.0);
     associated.AddComponent(new Sprite(associated, "img/cubngun.png"));
     associated.AddComponent(new Collider(associated));
 }
@@ -42,9 +43,16 @@ void PenguinCannon::Update(double dt) {
     this->angleDeg = (pointTowards + this->associated.box.GetCenter() * -1).GetRotation() * 180 / PI;
 
     this->associated.angleDeg = this->angleDeg;
+    SDL_Log("dt = %f", dt);
+    SDL_Log("timer = %f", shootIntervalTimer.Get());
+    shootIntervalTimer.Update(dt);
+    SDL_Log("timer = %f", shootIntervalTimer.Get());
 
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        this->Shoot(pointTowards);
+        if (shootIntervalTimer.Get() >= 1.0) {
+            shootIntervalTimer.Restart();
+            this->Shoot(pointTowards);
+        }
     }
 }
 

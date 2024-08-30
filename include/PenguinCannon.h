@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include "GameObject.h"
+#include "Timer.h"
 
 class PenguinCannon : public Component {
 public:
@@ -18,6 +19,7 @@ public:
 private:
     std::weak_ptr<GameObject> pbody;
     double angleDeg;
+    Timer shootIntervalTimer;
 };
 
 

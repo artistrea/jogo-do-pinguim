@@ -1,14 +1,16 @@
 #ifndef SPRITE_H_
 #define SPRITE_H_
+#include "Component.h"
+#include "Timer.h"
+
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "Component.h"
 #include <string>
 
 class Sprite : public Component {
 public:
     Sprite(GameObject& associated);
-    Sprite(GameObject& associated, std::string file, int frameCount=1, double frameTime=1.0);
+    Sprite(GameObject& associated, std::string file, int frameCount=1, double frameTime=1.0, double secondsToSelfDestruct=0.0);
     ~Sprite();
     void Open(std::string file);
     void SetClip(
@@ -40,6 +42,9 @@ private:
     int currentFrame;
     double timeElapsed;
     double frameTime;
+    // TODO: move this from Sprite (doesn't make sense for this behavior to be here)
+    double secondsToSelfDestruct;
+    Timer selfDestructCounter;
 };
 
 #endif

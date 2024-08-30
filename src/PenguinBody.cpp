@@ -7,6 +7,7 @@
 #include "Constants.h"
 #include "Sprite.h"
 #include "State.h"
+#include "Sound.h"
 #include "InputManager.h"
 
 PenguinBody* PenguinBody::player = nullptr;
@@ -55,6 +56,16 @@ void PenguinBody::Start() {
 void PenguinBody::Update(double dt) {
     if (this->hp <= 0) {
         if (!this->associated.IsDead()) {
+            State &stateInstance = State::GetInstance();
+            GameObject *go = new GameObject();
+            double animationTime = 0.3;
+            go->AddComponent(new Sprite(*go, "img/penguindeath.png", 5,animationTime / 5.0, animationTime));
+            go->box.SetCenter(this->associated.box.GetCenter());
+            Sound* boom = new Sound(*go, "audio/boom.wav");
+            go->AddComponent(boom);
+            stateInstance.AddObject(go);
+            boom->Play();
+
             Camera::Unfollow(&this->associated);
             this->associated.RequestDelete();
         }

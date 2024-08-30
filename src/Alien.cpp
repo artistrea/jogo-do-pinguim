@@ -30,7 +30,7 @@ void Alien::NotifyCollision(GameObject& collidedWith) {
 
 
 Alien::Alien(GameObject& associated, int nMinions):
-    Component(associated), hp(30), speed(0.0, 0.0),
+    Component(associated), hp(5), speed(0.0, 0.0),
     minionArray(nMinions), taskQueue()
 {
     auto *sprite = new Sprite(associated, "img/alien.png");
@@ -65,7 +65,19 @@ void Alien::Update(double dt) {
     InputManager &inputManager = InputManager::GetInstance();
 
     if (hp <= 0) {
-        this->associated.RequestDelete();
+        if (!this->associated.IsDead()) {
+            State &stateInstance = State::GetInstance();
+            GameObject *go = new GameObject();
+            double animationTime = 0.3;
+            go->AddComponent(new Sprite(*go, "img/aliendeath.png", 4, animationTime / 4.0, animationTime));
+            go->box.SetCenter(this->associated.box.GetCenter());
+            Sound* boom = new Sound(*go, "audio/boom.wav");
+            go->AddComponent(boom);
+            stateInstance.AddObject(go);
+            boom->Play();
+
+            this->associated.RequestDelete();
+        }
     }
 
     if (this->associated.IsDead()) return;

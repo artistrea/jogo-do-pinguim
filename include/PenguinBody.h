@@ -14,6 +14,7 @@ public:
     void Update(double dt);
     void Render();
     bool Is(std::string type);
+    Vec2 GetPosition();
 
     static PenguinBody* player;
 private:

@@ -11,9 +11,11 @@
 #include "Alien.h"
 #include "Sound.h"
 #include "Sprite.h"
+#include "PenguinBody.h"
 #include "State.h"
 #include "InputManager.h"
 
+int Alien::alienCount = 0;
 
 void Alien::NotifyCollision(GameObject& collidedWith) {
     Bullet *bullet = (Bullet*)collidedWith.GetComponent("Bullet");
@@ -31,8 +33,11 @@ void Alien::NotifyCollision(GameObject& collidedWith) {
 
 Alien::Alien(GameObject& associated, int nMinions):
     Component(associated), hp(5), speed(0.0, 0.0),
-    minionArray(nMinions), taskQueue()
+    minionArray(nMinions), state(Alien::AlienState::RESTING),
+    restTimer(), destination(PenguinBody::player->GetPosition()),
+    restTimeInSeconds(5)
 {
+    this->alienCount++;
     auto *sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
     associated.AddComponent(new Collider(associated));
@@ -62,10 +67,10 @@ Alien::~Alien() {
 }
 
 void Alien::Update(double dt) {
-    InputManager &inputManager = InputManager::GetInstance();
-
     if (hp <= 0) {
         if (!this->associated.IsDead()) {
+            this->alienCount++;
+        
             State &stateInstance = State::GetInstance();
             GameObject *go = new GameObject();
             double animationTime = 0.3;
@@ -87,66 +92,53 @@ void Alien::Update(double dt) {
     this->associated.angleDeg += velocityDeg * dt;
     if (this->associated.angleDeg > 360) this->associated.angleDeg -= 360;
 
-    if (inputManager.MousePress(RIGHT_MOUSE_BUTTON) || inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-        Vec2 clickAt({ (double)inputManager.GetMouseX(), (double)inputManager.GetMouseY() });
-        clickAt += Camera::pos;
-        if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
-            this->taskQueue.push(
-                Action(Action::ActionType::SHOOT, clickAt)
-            );
-        } else {
-            this->taskQueue.push(
-                Action(Action::ActionType::MOVE, clickAt)
-            );  
-        }
-    }
-
     double movespeed = 256.0;
-    if (this->taskQueue.size()) {
-        Action action = this->taskQueue.front();
-        switch (action.type) {
-        case Action::ActionType::SHOOT: {
-            this->taskQueue.pop();
-            Minion* closestMinionToShootLocation = nullptr;
-            double closestDistante = __DBL_MAX__;
 
-            for (size_t i=0; i<this->minionArray.size(); i++) {
-                auto minionAssociatedGo = this->minionArray[i].lock().get();
-                if (minionAssociatedGo == NULL) continue;
-                double dist = (action.pos + (minionAssociatedGo->box.GetCenter() * -1)).GetAbs();
-                if (dist < closestDistante) {
-                    closestMinionToShootLocation = (Minion*)minionAssociatedGo->GetComponent("Minion");
-                    closestDistante = dist;
-                }
-            }
-            if (closestMinionToShootLocation == nullptr) {
-                ThrowError::Error("Alien wanted to shoot, but closestMinionToShootLocation == nullptr");
-            } else {
-                closestMinionToShootLocation->Shoot(action.pos);
-            }
+    // state machine as alien AI
+    switch (this->state) {
+    case AlienState::MOVING: {
+        this->speed = (this->destination +  this->associated.box.GetCenter() * -1);
+        this->speed = this->speed.GetNormalized() * movespeed * dt;
+        Rect positionChange(
+            this->associated.box.GetCenter(), this->speed
+        );
 
-            break;
+        if (positionChange.Contains(this->destination)) {
+            this->associated.box.topLeftCorner = this->destination + (this->associated.box.GetCenter() + (this->associated.box.topLeftCorner * -1)) * -1;
+            if (PenguinBody::player != nullptr) {
+                this->Shoot(PenguinBody::player->GetPosition());
+            }
+            this->restTimer.Restart();
+            this->restTimeInSeconds = rand() % 10 + 5;
+            this->state = AlienState::RESTING;
+        } else {
+            this->associated.box.topLeftCorner =
+                this->associated.box.topLeftCorner + positionChange.dimensions;
         }
 
-        case Action::ActionType::MOVE: {
-            this->speed = (action.pos +  this->associated.box.GetCenter() * -1);
-            this->speed = this->speed.GetNormalized() * movespeed * dt;
-            Rect positionChange(
-                this->associated.box.GetCenter(), this->speed
-            );
+        break;
+    }
+    case AlienState::RESTING: {
+        this->restTimer.Update(dt);
 
-            if (positionChange.Contains(action.pos)) {
-                this->associated.box.topLeftCorner = action.pos + (this->associated.box.GetCenter() + (this->associated.box.topLeftCorner * -1)) * -1;
-                this->taskQueue.pop();
-            } else {
-                this->associated.box.topLeftCorner =
-                    this->associated.box.topLeftCorner + positionChange.dimensions;
+        if ((this->restTimer.Get() - (int)this->restTimer.Get()) < 0.2) {
+            if (PenguinBody::player != nullptr) {
+                this->Shoot(PenguinBody::player->GetPosition());
             }
-            break;
         }
-        default:
-            break;
+
+        if (this->restTimer.Get() > (double)this->restTimeInSeconds) {
+            if (PenguinBody::player != nullptr) {
+                this->destination = PenguinBody::player->GetPosition();
+                this->destination += Vec2(250 + rand() % 250, 0).GetRotated(rand());
+            }
+
+            this->state = Alien::AlienState::MOVING;
         }
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -154,17 +146,26 @@ void Alien::Render() {
 
 }
 
+void Alien::Shoot(Vec2 at) {
+    Minion* closestMinionToShootLocation = nullptr;
+    double closestDistante = __DBL_MAX__;
+
+    for (size_t i=0; i < this->minionArray.size(); i++) {
+        auto minionAssociatedGo = this->minionArray[i].lock().get();
+        if (minionAssociatedGo == NULL) continue;
+        double dist = (at + (minionAssociatedGo->box.GetCenter() * -1)).GetAbs();
+        if (dist < closestDistante) {
+            closestMinionToShootLocation = (Minion*)minionAssociatedGo->GetComponent("Minion");
+            closestDistante = dist;
+        }
+    }
+    if (closestMinionToShootLocation == nullptr) {
+        ThrowError::Error("Alien wanted to shoot, but closestMinionToShootLocation == nullptr");
+    } else {
+        closestMinionToShootLocation->Shoot(at);
+    }
+}
 
 bool Alien::Is(std::string type) {
     return type == "Alien";
 }
-
-Alien::Action::Action(ActionType type, Vec2 params) {
-    this->pos = params;
-    this->type = type;
-}
-
-Alien::Action::~Action() {}
-
-
-

@@ -53,6 +53,10 @@ void PenguinBody::Start() {
     this->started = true;
 }
 
+Vec2 PenguinBody::GetPosition() {
+    return this->associated.box.GetCenter();
+}
+
 void PenguinBody::Update(double dt) {
     if (this->hp <= 0) {
         if (!this->associated.IsDead()) {

@@ -43,11 +43,7 @@ void PenguinCannon::Update(double dt) {
     this->angleDeg = (pointTowards + this->associated.box.GetCenter() * -1).GetRotation() * 180 / PI;
 
     this->associated.angleDeg = this->angleDeg;
-    SDL_Log("dt = %f", dt);
-    SDL_Log("timer = %f", shootIntervalTimer.Get());
     shootIntervalTimer.Update(dt);
-    SDL_Log("timer = %f", shootIntervalTimer.Get());
-
     if (inputManager.MousePress(LEFT_MOUSE_BUTTON)) {
         if (shootIntervalTimer.Get() >= 0.5) {
             shootIntervalTimer.Restart();

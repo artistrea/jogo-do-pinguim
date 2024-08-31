@@ -3,6 +3,7 @@
 #include <iostream>
 #include <SDL2/SDL_mixer.h>
 #include "Component.h"
+#include "Timer.h"
 #include <queue>
 
 class Alien : public Component {
@@ -14,23 +15,20 @@ public:
     void Update(double dt);
     void Render();
     bool Is(std::string type);
+    void Shoot(Vec2 at);
 
     void NotifyCollision(GameObject& collidedWith);
 
+    static int alienCount;
 private:
     int hp;
     Vec2 speed;
     std::vector<std::weak_ptr<GameObject>> minionArray;
-
-    class Action {
-    public:
-        typedef enum { MOVE, SHOOT } ActionType;
-        Action(ActionType type, Vec2 params); // could separate params by enum with overloading
-        ~Action();
-        ActionType type;
-        Vec2 pos;
-    };
-    std::queue<Action> taskQueue;
+    enum AlienState { MOVING, RESTING };
+    enum AlienState state;
+    Timer restTimer;
+    int restTimeInSeconds;
+    Vec2 destination;
 };
 
 #endif

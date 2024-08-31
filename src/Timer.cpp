@@ -13,7 +13,6 @@ void Timer::Restart() {
 }
 
 double Timer::Get() {
-    SDL_Log("time: %f, should be bigger than \nINFO: time: %f", this->time, 3853200000.0);
     return this->time;
 }
 

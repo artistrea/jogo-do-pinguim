@@ -73,7 +73,7 @@ void Alien::Update(double dt) {
         
             State &stateInstance = State::GetInstance();
             GameObject *go = new GameObject();
-            double animationTime = 0.3;
+            double animationTime = 1; // the animation is only so long because of the sound
             go->AddComponent(new Sprite(*go, "img/aliendeath.png", 4, animationTime / 4.0, animationTime));
             go->box.SetCenter(this->associated.box.GetCenter());
             Sound* boom = new Sound(*go, "audio/boom.wav");

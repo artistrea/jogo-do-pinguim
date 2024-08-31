@@ -69,7 +69,7 @@ Alien::~Alien() {
 void Alien::Update(double dt) {
     if (hp <= 0) {
         if (!this->associated.IsDead()) {
-            this->alienCount++;
+            this->alienCount--;
         
             State &stateInstance = State::GetInstance();
             GameObject *go = new GameObject();

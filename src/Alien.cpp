@@ -33,11 +33,12 @@ void Alien::NotifyCollision(GameObject& collidedWith) {
 
 Alien::Alien(GameObject& associated, int nMinions):
     Component(associated), hp(5), speed(0.0, 0.0),
-    minionArray(nMinions), state(Alien::AlienState::RESTING),
-    restTimer(), destination(PenguinBody::player->GetPosition()),
+    minionArray(nMinions), state(Alien::AlienState::MOVING),
+    restTimer(), destination(PenguinBody::player->GetPosition() + Vec2(250 + rand() % 250, 0).GetRotated(rand())),
     restTimeInSeconds(5)
 {
     this->alienCount++;
+    SDL_Log("alienCount=%d", this->alienCount);
     auto *sprite = new Sprite(associated, "img/alien.png");
     associated.AddComponent(sprite);
     associated.AddComponent(new Collider(associated));
@@ -70,7 +71,8 @@ void Alien::Update(double dt) {
     if (hp <= 0) {
         if (!this->associated.IsDead()) {
             this->alienCount--;
-        
+            SDL_Log("alienCount=%d", this->alienCount);
+
             State &stateInstance = State::GetInstance();
             GameObject *go = new GameObject();
             double animationTime = 1; // the animation is only so long because of the sound

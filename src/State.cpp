@@ -88,8 +88,18 @@ void State::LoadAssets() {
 
     GameObject *alien(new GameObject());
     alien->AddComponent(new Alien(*alien, 3));
-    alien->box.topLeftCorner = Vec2(512, 300);
+    alien->box.topLeftCorner = Vec2(0, 0);
     objectArray.push_back(std::shared_ptr<GameObject>(alien));
+
+    GameObject *alien2(new GameObject());
+    alien2->AddComponent(new Alien(*alien2, 3));
+    alien2->box.topLeftCorner = Vec2(704, 0);
+    objectArray.push_back(std::shared_ptr<GameObject>(alien2));
+
+    GameObject *alien3(new GameObject());
+    alien3->AddComponent(new Alien(*alien3, 3));
+    alien3->box.topLeftCorner = Vec2(0, 640);
+    objectArray.push_back(std::shared_ptr<GameObject>(alien3));
 
     Camera::Follow(penguin);
 

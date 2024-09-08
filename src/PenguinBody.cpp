@@ -1,6 +1,7 @@
 #include "PenguinBody.h"
 #include "PenguinCannon.h"
 #include "GameObject.h"
+#include "Game.h"
 #include "Bullet.h"
 #include "Collider.h"
 #include "Component.h"
@@ -42,7 +43,7 @@ PenguinBody::~PenguinBody() {
 void PenguinBody::Start() {
     SDL_Log("started successfully");
     if (this->started) return;
-    State &state = State::GetInstance();
+    State &state = Game::GetInstance().GetState();
     auto go = new GameObject();
 
     auto cannon = new PenguinCannon(*go, state.GetObjectPtr(&this->associated));
@@ -60,7 +61,7 @@ Vec2 PenguinBody::GetPosition() {
 void PenguinBody::Update(double dt) {
     if (this->hp <= 0) {
         if (!this->associated.IsDead()) {
-            State &stateInstance = State::GetInstance();
+            State &stateInstance = Game::GetInstance().GetState();
             GameObject *go = new GameObject();
             double animationTime = 1; // the animation is only so long because of the sound
             go->AddComponent(new Sprite(*go, "img/penguindeath.png", 5,animationTime / 5.0, animationTime));

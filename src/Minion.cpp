@@ -8,6 +8,7 @@
 #include "State.h"
 #include "Vec2.h"
 #include "GameObject.h"
+#include "Game.h"
 #include "Minion.h"
 
 void Minion::NotifyCollision(GameObject& collidedWith) {
@@ -74,7 +75,7 @@ void Minion::Shoot(Vec2 target) {
     Vec2 speed = (target + this->associated.box.GetCenter() * -1);
     speed = speed.GetNormalized() * 512.0;
 
-    auto &state = State::GetInstance();
+    State &state = Game::GetInstance().GetState();
     auto go = new GameObject();
 
     go->AddComponent(new Bullet(*go, speed, 1, 1024.0, "img/minionbullet2.png"));

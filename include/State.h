@@ -19,14 +19,12 @@ public:
     void Start();
     std::weak_ptr<GameObject> AddObject(GameObject* go);
     std::weak_ptr<GameObject> GetObjectPtr(GameObject* go);
-    static State& GetInstance();
 
 private:
     Music music;
     bool quitRequested;
     bool started;
     std::vector<std::shared_ptr<GameObject>> objectArray;
-    static State *instance;
 };
 
 #endif

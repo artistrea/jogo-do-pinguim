@@ -14,6 +14,7 @@
 #include "PenguinBody.h"
 #include "State.h"
 #include "InputManager.h"
+#include "Game.h"
 
 int Alien::alienCount = 0;
 
@@ -48,7 +49,7 @@ void Alien::Start() {
     if (this->started) return;
 
     double radBetweenMinions = (2 * PI) / (this->minionArray.size());
-    State& stateInstance = State::GetInstance();
+    State& stateInstance = Game::GetInstance().GetState();
     std::weak_ptr<GameObject> associatedSharedPtr = stateInstance.GetObjectPtr(&this->associated);
 
     for (size_t i = 0; i < this->minionArray.size(); i++) {
@@ -73,7 +74,7 @@ void Alien::Update(double dt) {
             this->alienCount--;
             SDL_Log("alienCount=%d", this->alienCount);
 
-            State &stateInstance = State::GetInstance();
+            State &stateInstance = Game::GetInstance().GetState();
             GameObject *go = new GameObject();
             double animationTime = 1; // the animation is only so long because of the sound
             go->AddComponent(new Sprite(*go, "img/aliendeath.png", 4, animationTime / 4.0, animationTime));

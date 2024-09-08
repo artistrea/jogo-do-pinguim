@@ -18,26 +18,12 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-State *State::instance = nullptr;
-
-State& State::GetInstance() {
-    if (!State::instance) {
-        State::instance = new State();
-    }
-
-    return *State::instance;
-}
-
-
 State::State():
     music(),
     quitRequested(false),
     started(false),
     objectArray()
     {
-    if (State::instance != nullptr) {
-        ThrowError::Error("Tried instancing State more than once!");
-    }
 }
 
 void State::Start() {

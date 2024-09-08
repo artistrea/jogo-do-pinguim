@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "PenguinBody.h"
 #include "PenguinCannon.h"
+#include "Game.h"
 #include "GameObject.h"
 #include "Component.h"
 #include "Sprite.h"
@@ -64,7 +65,7 @@ void PenguinCannon::Shoot(Vec2 target) {
     Vec2 speed = (target + this->associated.box.GetCenter() * -1);
     speed = speed.GetNormalized() * 512.0;
 
-    auto &state = State::GetInstance();
+    auto &state = Game::GetInstance().GetState();
     auto go = new GameObject();
     Bullet* bullet = new Bullet(*go, speed, 1, 1024.0, "img/minionbullet2.png");
     bullet->targetsPlayer = false;

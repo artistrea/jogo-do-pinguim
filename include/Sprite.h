@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <string>
+#include <memory>
 
 class Sprite : public Component {
 public:
@@ -34,7 +35,7 @@ public:
     bool Is(std::string type);
 
 private:
-    SDL_Texture* texture;
+    std::shared_ptr<SDL_Texture> texture;
     int width, height;
     SDL_Rect clipRect;
     Vec2 scale;

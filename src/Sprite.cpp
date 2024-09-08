@@ -30,14 +30,15 @@ void Sprite::Update(double dt) {
 
 
 Sprite::Sprite(GameObject& associated):
-    Component(associated), clipRect(), scale(1.0, 1.0) {
-    texture = nullptr;
+    Component(associated),  texture(nullptr), scale(1.0, 1.0), 
+    frameCount(1), currentFrame(0),
+    timeElapsed(0.0), frameTime(1.0), secondsToSelfDestruct(0.0), selfDestructCounter() {
 }
 
-Sprite::Sprite(GameObject& associated, std::string file, int frameCount, double frameTime, double secondsToSelfDestruct): Component(associated), scale(1.0, 1.0), 
+Sprite::Sprite(GameObject& associated, std::string file, int frameCount, double frameTime, double secondsToSelfDestruct):
+    Component(associated),  texture(nullptr), scale(1.0, 1.0), 
     frameCount(frameCount), currentFrame(0),
     timeElapsed(0.0), frameTime(frameTime), secondsToSelfDestruct(secondsToSelfDestruct), selfDestructCounter() {
-    texture = nullptr;
     Open(file);
     SetFrame(0);
 }
@@ -70,7 +71,7 @@ void Sprite::Open(std::string file) {
     if (!IsOpen()) {
         ThrowError::SDL_Error();
     }
-    int result = SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+    int result = SDL_QueryTexture(texture.get(), nullptr, nullptr, &width, &height);
 
     if (result) ThrowError::SDL_Error();
 
@@ -94,7 +95,7 @@ void Sprite::Render(double x, double y) {
     dest.h = associated.box.dimensions.y;
     int result = SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(),
-        texture,
+        texture.get(),
         &clipRect,
         &dest,
         this->associated.angleDeg,
@@ -116,7 +117,7 @@ int Sprite::GetHeight() {
     return height * scale.y;
 }
 bool Sprite::IsOpen() {
-    return texture != nullptr && texture != NULL;
+    return texture.get() != nullptr && texture.get() != NULL;
 }
 
 // if one of the axis is eq to 0.0, won't set axis value

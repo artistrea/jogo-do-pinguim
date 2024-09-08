@@ -134,6 +134,7 @@ void Game::Run() {
             if (this->stateStack.size() && this->storedState == nullptr) {
                 this->stateStack.top()->Resume();
             }
+            Resources::ClearImages();
         }
 
         if (this->storedState != nullptr) {

@@ -12,7 +12,7 @@
 // coloque aqui o basePath necessário no seu OS:
 std::string Resources::basePath("./assets/");
 
-std::unordered_map<std::string, SDL_Texture*> Resources::imageTable;
+std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> Resources::imageTable;
 std::unordered_map<std::string, Mix_Music*> Resources::musicTable;
 std::unordered_map<std::string, Mix_Chunk*> Resources::soundTable;
 
@@ -31,12 +31,12 @@ const char* Resources::GetFullPath(std::string file) {
     return path;
 }
 
-SDL_Texture* Resources::GetImage(std::string file) {
+std::shared_ptr<SDL_Texture> Resources::GetImage(std::string file) {
     if (imageTable.find(file) == imageTable.end()) {
-        imageTable[file] = IMG_LoadTexture(
+        imageTable[file] = std::shared_ptr<SDL_Texture>(IMG_LoadTexture(
             Game::GetInstance().GetRenderer(),
             GetFullPath(file)
-        );
+        ), [](SDL_Texture* texture){ SDL_DestroyTexture(texture); });
     }
 
     return imageTable.find(file)->second;
@@ -44,8 +44,11 @@ SDL_Texture* Resources::GetImage(std::string file) {
 
 void Resources::ClearImages() {
     for (auto itr = imageTable.begin(); itr != imageTable.end();) {
-        SDL_DestroyTexture(itr->second);
-        itr = imageTable.erase(itr);
+        if (itr->second.use_count() == 1) {
+            itr = imageTable.erase(itr);
+        } else {
+            itr++;
+        }
     }
 
     imageTable.clear();

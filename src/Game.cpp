@@ -1,6 +1,6 @@
 #include "ThrowError.h"
 #include "Game.h"
-#include "State.h"
+#include "StageState.h"
 #include "Resources.h"
 #include "InputManager.h"
 
@@ -69,7 +69,7 @@ Game::Game(std::string title, int width, int height) {
         ThrowError::SDL_Error();
     }
 
-    state = new State();
+    state = new StageState();
     frameStart = 0;
     dt = 0.0;
 
@@ -129,7 +129,7 @@ SDL_Window* Game::GetWindow() {
     return window;
 }
 
-State& Game::GetState() {
+StageState& Game::GetState() {
     return *state;
 }
 

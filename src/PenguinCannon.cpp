@@ -8,7 +8,7 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Sprite.h"
-#include "State.h"
+#include "StageState.h"
 #include "InputManager.h"
 
 void PenguinCannon::NotifyCollision(GameObject& collidedWith) {

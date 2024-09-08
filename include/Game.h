@@ -1,7 +1,7 @@
 #ifndef GAME_H_
 #define GAME_H_
 
-#include "State.h"
+#include "StageState.h"
 #include "Camera.h"
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -13,7 +13,7 @@ private:
     static Game *instance;
     SDL_Window* window;
     SDL_Renderer* renderer;
-    State *state;
+    StageState *state;
     uint64_t frameStart;
     double dt;
     void CalculateDeltaTime();
@@ -23,7 +23,7 @@ public:
     void Run();
     SDL_Renderer* GetRenderer();
     SDL_Window* GetWindow();
-    State& GetState();
+    StageState& GetState();
     static Game& GetInstance();
     double GetDeltaTime();
 };

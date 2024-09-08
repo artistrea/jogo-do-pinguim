@@ -1,5 +1,5 @@
 #include "ThrowError.h"
-#include "State.h"
+#include "StageState.h"
 #include "Collision.h"
 #include "Sprite.h"
 #include "Sound.h"
@@ -18,7 +18,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-State::State():
+StageState::StageState():
     music(),
     quitRequested(false),
     started(false),
@@ -26,7 +26,7 @@ State::State():
     {
 }
 
-void State::Start() {
+void StageState::Start() {
     if (this->started) return;
 
     this->LoadAssets();
@@ -41,15 +41,15 @@ void State::Start() {
 }
 
 
-State::~State() {
+StageState::~StageState() {
     objectArray.clear();
 }
 
-bool State::QuitRequested() {
+bool StageState::QuitRequested() {
     return quitRequested;
 }
 
-void State::LoadAssets() {
+void StageState::LoadAssets() {
     SDL_Log("started loading assets");
 
     GameObject* bg(new GameObject());
@@ -95,7 +95,7 @@ void State::LoadAssets() {
     SDL_Log("finished loading assets");
 }
 
-void State::Update(double dt) {
+void StageState::Update(double dt) {
     InputManager &inputManager =  InputManager::GetInstance();
 
     if (
@@ -139,13 +139,13 @@ void State::Update(double dt) {
     }
 }
 
-void State::Render() {
+void StageState::Render() {
     for (size_t i=0; i<objectArray.size(); i++) {
         objectArray[i]->Render();
     }
 }
 
-std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
+std::weak_ptr<GameObject> StageState::AddObject(GameObject *go) {
     if (this->started) go->Start();
 
     std::shared_ptr<GameObject> shared_go(go);
@@ -155,7 +155,7 @@ std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
     return std::weak_ptr<GameObject>(shared_go);
 }
 
-std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {
+std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject* go) {
     for (auto &obj: this->objectArray) {
         if (obj.get() == go) {
             return std::weak_ptr<GameObject>(obj);

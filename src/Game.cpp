@@ -131,7 +131,7 @@ void Game::Run() {
 
         if (GetCurrentState().PopRequested()) {
             this->stateStack.pop();
-            if (this->stateStack.size() && this->storedState != nullptr) {
+            if (this->stateStack.size() && this->storedState == nullptr) {
                 this->stateStack.top()->Resume();
             }
         }
@@ -140,9 +140,9 @@ void Game::Run() {
             if (this->stateStack.size()) {
                 this->stateStack.top()->Pause();
             }
-            this->storedState = nullptr;
             this->stateStack.emplace(this->storedState);
-            this->stateStack.top()->Start();
+            this->storedState->Start();
+            this->storedState = nullptr;
         }
     }
 

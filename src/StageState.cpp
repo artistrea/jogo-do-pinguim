@@ -27,21 +27,26 @@ StageState::StageState():
 void StageState::Start() {
     if (this->started) return;
 
-    this->LoadAssets();
+    Alien::alienCount = 0;
 
+    this->LoadAssets();
     StartArray();
+
 
     started = true;
 }
 
 void StageState::Pause() {
+    this->music.Stop();
 }
 
 void StageState::Resume() {
+    this->music.Play();
 }
 
 
 StageState::~StageState() {
+    this->music.Stop();
     objectArray.clear();
 }
 
@@ -95,11 +100,16 @@ void StageState::Update(double dt) {
     InputManager &inputManager =  InputManager::GetInstance();
 
     if (
-        inputManager.QuitRequested() ||
-        inputManager.KeyPress(ESCAPE_KEY)
+        inputManager.QuitRequested()
         ) {
         quitRequested = true;
     }
+    if (
+        inputManager.KeyPress(ESCAPE_KEY)
+    ) {
+        popRequested = true;
+    }
+
 
     Camera::Update(dt);
 

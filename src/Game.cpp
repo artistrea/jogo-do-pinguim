@@ -13,7 +13,7 @@
 
 Game *Game::instance = nullptr;
 
-Game::Game(std::string title, int width, int height) {
+Game::Game(std::string title, int width, int height): storedState(nullptr) {
     SDL_Log("Game loading started");
 
     if (Game::instance != nullptr) {
@@ -69,7 +69,6 @@ Game::Game(std::string title, int width, int height) {
         ThrowError::SDL_Error();
     }
 
-    state = new StageState();
     frameStart = 0;
     dt = 0.0;
 
@@ -78,7 +77,13 @@ Game::Game(std::string title, int width, int height) {
 
 
 Game::~Game() {
-    delete state;
+    if (storedState != nullptr) {
+        delete storedState;
+    }
+
+    while (stateStack.size()) {
+        stateStack.pop();
+    }
 
     Resources::ClearImages();
     Resources::ClearMusics();
@@ -96,12 +101,19 @@ Game::~Game() {
 }
 
 void Game::Run() {
-    state->Start();
+    if (storedState != nullptr) {
+        this->stateStack.emplace(storedState);
+        storedState->Start();
+        storedState = nullptr;
+    }
 
     InputManager &inputManager =  InputManager::GetInstance();
 
     SDL_Log("reached while");
-    while (!state->QuitRequested()) {
+    while (
+        this->stateStack.size() > 0
+        && !GetCurrentState().QuitRequested()
+    ) {
         CalculateDeltaTime();
 
         inputManager.Update();
@@ -109,13 +121,29 @@ void Game::Run() {
         int res = SDL_RenderClear(renderer);
         if (res) ThrowError::SDL_Error();
 
-        state->Update(GetDeltaTime());
+        GetCurrentState().Update(GetDeltaTime());
 
-        state->Render();
+        GetCurrentState().Render();
 
         SDL_RenderPresent(renderer);
 
         SDL_Delay(16);
+
+        if (GetCurrentState().PopRequested()) {
+            this->stateStack.pop();
+            if (this->stateStack.size() && this->storedState != nullptr) {
+                this->stateStack.top()->Resume();
+            }
+        }
+
+        if (this->storedState != nullptr) {
+            if (this->stateStack.size()) {
+                this->stateStack.top()->Pause();
+            }
+            this->storedState = nullptr;
+            this->stateStack.emplace(this->storedState);
+            this->stateStack.top()->Start();
+        }
     }
 
     delete instance;
@@ -129,8 +157,8 @@ SDL_Window* Game::GetWindow() {
     return window;
 }
 
-StageState& Game::GetState() {
-    return *state;
+State& Game::GetCurrentState() {
+    return *this->stateStack.top();
 }
 
 void Game::CalculateDeltaTime() {
@@ -157,4 +185,8 @@ Game& Game::GetInstance() {
         );
 
     return *Game::instance;
+}
+
+void Game::Push(State* state) {
+    this->storedState = state;
 }

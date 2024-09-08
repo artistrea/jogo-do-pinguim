@@ -20,9 +20,7 @@
 
 StageState::StageState():
     music(),
-    quitRequested(false),
-    started(false),
-    objectArray()
+    State()
     {
 }
 
@@ -31,22 +29,20 @@ void StageState::Start() {
 
     this->LoadAssets();
 
-    // @important: we cannot use reference because Start() may add new values
-    // INVALID: for (auto const &obj : this->objectArray) {
-    for (size_t i = 0; i < this->objectArray.size(); i++) {
-        this->objectArray[i]->Start();
-    }
+    StartArray();
 
     started = true;
+}
+
+void StageState::Pause() {
+}
+
+void StageState::Resume() {
 }
 
 
 StageState::~StageState() {
     objectArray.clear();
-}
-
-bool StageState::QuitRequested() {
-    return quitRequested;
 }
 
 void StageState::LoadAssets() {
@@ -107,9 +103,7 @@ void StageState::Update(double dt) {
 
     Camera::Update(dt);
 
-    for (size_t i=0; i < objectArray.size(); i++) {
-        objectArray[i]->Update(dt);
-    }
+    UpdateArray(dt);
 
     for (size_t i=0; i < objectArray.size(); i++) {
         if (objectArray[i]->GetComponent("Collider") == nullptr) {
@@ -140,27 +134,5 @@ void StageState::Update(double dt) {
 }
 
 void StageState::Render() {
-    for (size_t i=0; i<objectArray.size(); i++) {
-        objectArray[i]->Render();
-    }
-}
-
-std::weak_ptr<GameObject> StageState::AddObject(GameObject *go) {
-    if (this->started) go->Start();
-
-    std::shared_ptr<GameObject> shared_go(go);
-
-    objectArray.emplace_back(shared_go);
-
-    return std::weak_ptr<GameObject>(shared_go);
-}
-
-std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject* go) {
-    for (auto &obj: this->objectArray) {
-        if (obj.get() == go) {
-            return std::weak_ptr<GameObject>(obj);
-        }
-    }
-
-    return std::weak_ptr<GameObject>();
+    RenderArray();
 }

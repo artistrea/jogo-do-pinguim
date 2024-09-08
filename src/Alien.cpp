@@ -12,7 +12,7 @@
 #include "Sound.h"
 #include "Sprite.h"
 #include "PenguinBody.h"
-#include "StageState.h"
+#include "State.h"
 #include "InputManager.h"
 #include "Game.h"
 
@@ -49,7 +49,7 @@ void Alien::Start() {
     if (this->started) return;
 
     double radBetweenMinions = (2 * PI) / (this->minionArray.size());
-    StageState& stateInstance = Game::GetInstance().GetState();
+    State& stateInstance = Game::GetInstance().GetCurrentState();
     std::weak_ptr<GameObject> associatedSharedPtr = stateInstance.GetObjectPtr(&this->associated);
 
     for (size_t i = 0; i < this->minionArray.size(); i++) {
@@ -74,7 +74,7 @@ void Alien::Update(double dt) {
             this->alienCount--;
             SDL_Log("alienCount=%d", this->alienCount);
 
-            StageState &stateInstance = Game::GetInstance().GetState();
+            State &stateInstance = Game::GetInstance().GetCurrentState();
             GameObject *go = new GameObject();
             double animationTime = 1; // the animation is only so long because of the sound
             go->AddComponent(new Sprite(*go, "img/aliendeath.png", 4, animationTime / 4.0, animationTime));

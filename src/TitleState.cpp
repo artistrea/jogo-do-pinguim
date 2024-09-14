@@ -8,6 +8,14 @@
 #include "Camera.h"
 
 TitleState::TitleState(): blinkFactor(3) {
+}
+
+TitleState::~TitleState() {
+
+}
+
+
+void TitleState::LoadAssets() {
     GameObject *go = new GameObject();
 
     go->AddComponent(new Sprite(*go, "img/title.jpg"));
@@ -47,15 +55,6 @@ TitleState::TitleState(): blinkFactor(3) {
     this->AddObject(go);
 }
 
-TitleState::~TitleState() {
-
-}
-
-
-void TitleState::LoadAssets() {
-
-}
-
 void TitleState::Update(double dt) {
     InputManager &inputManager =  InputManager::GetInstance();
 
@@ -92,8 +91,14 @@ void TitleState::Render() {
 
 
 void TitleState::Start() {
-    StartArray();
+    if (this->started) return;
+
     Camera::pos = Vec2(0.0, 0.0);
+
+    this->LoadAssets();
+    StartArray();
+
+    this->started = true;
 }
 
 void TitleState::Pause() {

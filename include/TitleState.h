@@ -2,8 +2,13 @@
 #define TITLE_STATE_H_
 
 #include "State.h"
+#include "Text.h"
 
 class TitleState: public State {
+private:
+    Text* blinkingText;
+    int blinkFactor;
+
 public:
     TitleState();
     ~TitleState();

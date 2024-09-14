@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "Resources.h"
 #include "Game.h"
 #include "ThrowError.h"
@@ -15,6 +16,7 @@ std::string Resources::basePath("./assets/");
 std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> Resources::imageTable;
 std::unordered_map<std::string, Mix_Music*> Resources::musicTable;
 std::unordered_map<std::string, Mix_Chunk*> Resources::soundTable;
+std::unordered_map<std::string, TTF_Font*> Resources::fontTable;
 
 const char* Resources::GetFullPath(std::string file) {
     const int bufferLengthNeedsToBe = file.size() + basePath.size() + 1;
@@ -96,3 +98,31 @@ void Resources::ClearSounds() {
     soundTable.clear();
 }
 
+
+
+TTF_Font* Resources::GetFont(std::string file, int fontSize) {
+    std::string tableKey = file + std::to_string(fontSize);
+
+    if (fontTable.find(tableKey) == fontTable.end()) {
+        fontTable[tableKey] = TTF_OpenFont(
+            GetFullPath(file),
+            fontSize
+        );
+        if (fontTable[tableKey] == nullptr) {
+            ThrowError::SDL_Error();
+        }
+        return fontTable[tableKey];
+    }
+
+    return fontTable[tableKey];
+}
+
+void Resources::ClearFonts() {
+    Mix_HaltChannel(-1);
+    for (auto itr = fontTable.begin(); itr != fontTable.end();) {
+        TTF_CloseFont(itr->second);
+        itr = fontTable.erase(itr);
+    }
+
+    fontTable.clear();
+}

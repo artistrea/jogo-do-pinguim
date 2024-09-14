@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdexcept>
 #include <stdint.h>
 
@@ -59,6 +60,10 @@ Game::Game(std::string title, int width, int height): storedState(nullptr) {
     //     ThrowError::SDL_Error();
     // }
 
+    if (TTF_Init() != 0) {
+        ThrowError::SDL_Error();
+    }
+
     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
     if (window == NULL || window == nullptr) {
         ThrowError::SDL_Error();
@@ -88,9 +93,12 @@ Game::~Game() {
     Resources::ClearImages();
     Resources::ClearMusics();
     Resources::ClearSounds();
-    
+    Resources::ClearFonts();
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+
+    TTF_Quit();
 
     Mix_CloseAudio();
     Mix_Quit();

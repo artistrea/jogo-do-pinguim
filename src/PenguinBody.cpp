@@ -113,6 +113,25 @@ void PenguinBody::Update(double dt) {
     this->associated.angleDeg = this->angleDeg;
 
     this->associated.box.topLeftCorner += speed * dt;
+
+    if (this->associated.box.topLeftCorner.x < 0) {
+        this->associated.box.topLeftCorner.x = 0;
+    }
+    
+    if (this->associated.box.topLeftCorner.y < 0) {
+        this->associated.box.topLeftCorner.y = 0;
+    }
+
+    // TODO: change magic numbers to tile map size
+    if (this->associated.box.topLeftCorner.x > 1408 - this->associated.box.dimensions.x
+    ) {
+        this->associated.box.topLeftCorner.x = 1408 - this->associated.box.dimensions.x;
+    }
+
+    if (this->associated.box.topLeftCorner.y > 1280 - this->associated.box.dimensions.y
+    ) {
+        this->associated.box.topLeftCorner.y = 1280 - this->associated.box.dimensions.y;
+    }
 }
 
 void PenguinBody::Render() {
@@ -123,23 +142,4 @@ bool PenguinBody::Is(std::string type) {
     return "PenguinBody" == type;
 }
 
-
-// class PenguinBody : public Component {
-// public:
-//     PenguinBody(GameObject &associated);
-//     ~PenguinBody();
-
-//     void Start();
-//     void Update(double dt);
-//     void Render();
-//     bool Is(std::string type);
-
-//     static PenguinBody* player;
-// private:
-//     std::weak_ptr<GameObject> pcannon;
-//     Vec2 speed;
-//     double linearSpeed;
-//     double angleDeg;
-//     int hp;
-// };
 

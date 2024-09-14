@@ -1,19 +1,18 @@
-#ifndef STAGE_STATE_H_
-#define STAGE_STATE_H_
+#ifndef END_STATE_H_
+#define END_STATE_H_
 #include "Sprite.h"
 #include "State.h"
 #include "Camera.h"
 #include "Music.h"
-#include "Timer.h"
 #include "GameObject.h"
 #include <vector>
 #include <memory>
 
 
-class StageState: public State {
+class EndState: public State {
 public:
-    StageState();
-    ~StageState();
+    EndState();
+    ~EndState();
 
     void LoadAssets();
     void Update(double dt);
@@ -25,8 +24,6 @@ public:
 
 private:
     Music music;
-    bool willRequestPop;
-    Timer requestPopTimer;
 };
 
 #endif

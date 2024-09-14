@@ -1,4 +1,7 @@
 #include "ThrowError.h"
+#include "EndState.h"
+#include "Game.h"
+#include "GameData.h"
 #include "StageState.h"
 #include "Collision.h"
 #include "Sprite.h"
@@ -19,8 +22,10 @@
 #include <math.h>
 
 StageState::StageState():
+    State(),
     music(),
-    State()
+    willRequestPop(false),
+    requestPopTimer()
     {
 }
 
@@ -46,8 +51,6 @@ void StageState::Resume() {
 
 
 StageState::~StageState() {
-    this->music.Stop();
-    objectArray.clear();
 }
 
 void StageState::LoadAssets() {
@@ -104,6 +107,7 @@ void StageState::Update(double dt) {
         ) {
         quitRequested = true;
     }
+
     if (
         inputManager.KeyPress(ESCAPE_KEY)
     ) {
@@ -140,6 +144,30 @@ void StageState::Update(double dt) {
 
         objectArray.erase(objectArray.begin() + i);
         i--;
+    }
+
+    // this is done so there is a delay to let the last explosion go off
+    if (
+        !this->willRequestPop &&
+        (Alien::alienCount == 0 || PenguinBody::player == nullptr)
+    ) {
+        this->willRequestPop = true;
+        music.Stop(1800); // so that music fades out
+        this->requestPopTimer.Restart();
+    }
+
+    if (this->willRequestPop) {
+        this->requestPopTimer.Update(dt);
+        if (this->requestPopTimer.Get() > 2) {
+            if (Alien::alienCount == 0) {
+                GameData::playerVictory = true;
+            } else {
+                GameData::playerVictory = false;
+            }
+
+            Game::GetInstance().Push(new EndState());
+            this->popRequested = true;
+        }
     }
 }
 

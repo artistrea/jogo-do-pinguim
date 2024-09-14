@@ -32,12 +32,14 @@ void Alien::NotifyCollision(GameObject& collidedWith) {
 }
 
 
-Alien::Alien(GameObject& associated, int nMinions):
+Alien::Alien(GameObject& associated, int nMinions, double timerOffset):
     Component(associated), hp(5), speed(0.0, 0.0),
-    minionArray(nMinions), state(Alien::AlienState::MOVING),
+    minionArray(nMinions), state(Alien::AlienState::RESTING),
     restTimer(), destination(PenguinBody::player->GetPosition() + Vec2(250 + rand() % 250, 0).GetRotated(rand())),
     restTimeInSeconds(5)
 {
+    restTimer.Update(timerOffset);
+
     this->alienCount++;
     SDL_Log("alienCount=%d", this->alienCount);
     auto *sprite = new Sprite(associated, "img/alien.png");
